@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y \
     git \
     unzip
 
+# Perbaiki konflik MPM Apache
+RUN a2dismod mpm_event && a2enmod mpm_prefork
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
