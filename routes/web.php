@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\AdminController;
 use App\Models\Project;
 use App\Models\Profile;
@@ -10,6 +11,7 @@ use App\Models\Message;
 use App\Models\Certificate;
 use App\Models\Testimonial;
 use App\Models\Skill;
+use App\Models\User;
 
 // Halaman Utama Portofolio (Beranda, Tentang, Skills, Projek, Sertifikat, Blog, Testimoni, Kontak)
 Route::get('/', function () {
@@ -86,4 +88,17 @@ Route::middleware('auth')->group(function () {
     // Testimoni (Admin tambah/hapus)
     Route::post('/admin/testimonial/store', [AdminController::class, 'storeTestimonial'])->name('testimonial.store');
     Route::delete('/admin/testimonial/delete/{id}', [AdminController::class, 'destroyTestimonial'])->name('testimonial.delete');
+});
+
+// Rute Darurat Buat Akun Admin Baru (Hapus setelah berhasil login!)
+Route::get('/bikin-admin-baru', function () {
+    $user = User::updateOrCreate(
+        ['email' => 'admin@ena.com'],
+        [
+            'name' => 'Admin Ena',
+            'password' => Hash::make('ena12345'),
+        ]
+    );
+
+    return "Sukses! Sekarang silakan login pakai -> Email: admin@ena.com | Password: ena12345";
 });
