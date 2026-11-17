@@ -13,7 +13,7 @@ use App\Models\Testimonial;
 use App\Models\Skill;
 
 // ==========================================
-// HALAMAN UTAMA PORTOFOLIO
+// HALAMAN UTAMA PENGUNJUNG
 // ==========================================
 
 Route::get('/', function () {
@@ -29,7 +29,7 @@ Route::get('/', function () {
 
 
 // ==========================================
-// HALAMAN DETAIL BLOG
+// HALAMAN BLOG
 // ==========================================
 
 Route::get('/blog/{id}', function ($id) {
@@ -38,19 +38,25 @@ Route::get('/blog/{id}', function ($id) {
 
 
 // ==========================================
-// FITUR PENGUNJUNG
+// KIRIM PESAN PENGUNJUNG
 // ==========================================
 
-// Kirim pesan pengunjung
 Route::post('/kirim-pesan', [AdminController::class, 'storeMessage'])
     ->name('pesan.store');
 
-// Kirim testimoni pengunjung
-// Tidak memerlukan login admin
+
+// ==========================================
+// KIRIM TESTIMONI PENGUNJUNG
+// ==========================================
+
 Route::post('/admin/testimonial/store', [AdminController::class, 'storeTestimonial'])
     ->name('testimonial.store');
 
-// Download CV
+
+// ==========================================
+// DOWNLOAD CV
+// ==========================================
+
 Route::get('/download-cv', function () {
     $profile = Profile::first();
 
@@ -74,7 +80,7 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login')->middleware('guest');
 
-// Proses login
+
 Route::post('/login', function (Request $request) {
 
     $credentials = $request->validate([
@@ -83,11 +89,9 @@ Route::post('/login', function (Request $request) {
     ]);
 
     if (Auth::attempt($credentials)) {
-
         $request->session()->regenerate();
 
-        // Setelah login langsung ke dashboard admin
-        return redirect()->route('admin.index');
+        return redirect()->route('admin.dashboard');
     }
 
     return back()->withErrors([
@@ -98,34 +102,32 @@ Route::post('/login', function (Request $request) {
 
 
 // ==========================================
-// LOGOUT ADMIN
-// ==========================================
-
-Route::post('/logout', function (Request $request) {
-
-    Auth::logout();
-
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    return redirect('/');
-
-})->name('logout')->middleware('auth');
-
-
-// ==========================================
 // ROUTE KHUSUS ADMIN
 // ==========================================
 
 Route::middleware('auth')->group(function () {
 
-    // Dashboard Admin
-    Route::get('/admin', [AdminController::class, 'index'])
-        ->name('admin.index');
+    // ARAHKAN ADMIN KE PANEL KONTROL DI HOME.BLADE.PHP
+    Route::get('/admin', function () {
+        return redirect('/#kelola-karya');
+    })->name('admin.dashboard');
+
+
+    // LOGOUT
+    Route::post('/logout', function (Request $request) {
+
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+
+    })->name('logout');
 
 
     // ======================================
-    // CRUD PROYEK
+    // CRUD PROJECT
     // ======================================
 
     Route::post('/admin/store', [AdminController::class, 'storeProject'])
@@ -139,7 +141,7 @@ Route::middleware('auth')->group(function () {
 
 
     // ======================================
-    // UPDATE PROFIL DAN CV
+    // UPDATE PROFIL
     // ======================================
 
     Route::post('/admin/profile/update', [AdminController::class, 'updateProfile'])
@@ -147,7 +149,7 @@ Route::middleware('auth')->group(function () {
 
 
     // ======================================
-    // SERTIFIKAT DAN PRESTASI
+    // CRUD SERTIFIKAT
     // ======================================
 
     Route::post('/admin/certificate/store', [AdminController::class, 'storeCertificate'])
@@ -158,10 +160,9 @@ Route::middleware('auth')->group(function () {
 
 
     // ======================================
-    // TESTIMONI KHUSUS ADMIN
+    // HAPUS TESTIMONI
     // ======================================
 
-    // Hapus testimoni
     Route::delete('/admin/testimonial/delete/{id}', [AdminController::class, 'destroyTestimonial'])
         ->name('testimonial.delete');
 
