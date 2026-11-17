@@ -15,8 +15,9 @@ use Illuminate\Support\Facades\File;
 
 class AdminController extends Controller
 {
-    // Menampilkan Dashboard Admin beserta semua data termasuk sertifikat & pesan
-    public function index() {
+    // MENAMPILKAN DASHBOARD ADMIN
+    public function index()
+    {
         $projects = Project::all();
         $profile = Profile::first();
         $skills = Skill::all();
@@ -24,10 +25,17 @@ class AdminController extends Controller
         $messages = Message::latest()->get();
         $testimonials = Testimonial::latest()->get();
 
-        return view('home', compact('projects', 'profile', 'skills', 'certificates', 'messages', 'testimonials'));
+        return view('home', compact(
+            'projects',
+            'profile',
+            'skills',
+            'certificates',
+            'messages',
+            'testimonials'
+        ));
     }
 
-    // --- SIMPAN PESAN DARI PENGUNJUNG ---
+    // SIMPAN PESAN DARI PENGUNJUNG
     public function storeMessage(Request $request)
     {
         $request->validate([
@@ -41,25 +49,26 @@ class AdminController extends Controller
             'pesan' => $request->pesan,
         ]);
 
-        return redirect()->back()->with('success', 'Pesan berhasil dikirim!');
+        return redirect()->back()
+            ->with('success', 'Pesan berhasil dikirim!');
     }
 
-    // --- CRUD TESTIMONI ---
+    // CRUD TESTIMONI
     public function storeTestimonial(Request $request)
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'profesi' => 'required|string|max:255',
             'pesan' => 'required|string',
         ]);
 
         Testimonial::create([
             'nama' => $request->nama,
-            'profesi' => $request->profesi,
+            'profesi' => 'Pengunjung',
             'pesan' => $request->pesan,
         ]);
 
-        return redirect('/#testimoni')->with('success', 'Testimoni berhasil ditambahkan!');
+        return redirect('/#testimoni')
+            ->with('success', 'Testimoni berhasil ditambahkan!');
     }
 
     public function destroyTestimonial($id)
@@ -67,10 +76,11 @@ class AdminController extends Controller
         $testimonial = Testimonial::findOrFail($id);
         $testimonial->delete();
 
-        return redirect('/#testimoni')->with('success', 'Testimoni berhasil dihapus!');
+        return redirect('/#testimoni')
+            ->with('success', 'Testimoni berhasil dihapus!');
     }
 
-    // --- CRUD PROYEK ---
+    // CRUD PROYEK
     public function storeProject(Request $request)
     {
         $request->validate([
@@ -94,13 +104,15 @@ class AdminController extends Controller
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
             $filename = time() . '_' . $file->getClientOriginalName();
+
             $file->move(public_path('img/projects'), $filename);
             $project->gambar = $filename;
         }
 
         $project->save();
 
-        return redirect('/#project')->with('success', 'Project baru berhasil ditambahkan!');
+        return redirect('/#project')
+            ->with('success', 'Project baru berhasil ditambahkan!');
     }
 
     public function updateProject(Request $request, $id)
@@ -124,34 +136,46 @@ class AdminController extends Controller
         $project->link_github = $request->link_github;
 
         if ($request->hasFile('gambar')) {
-            if ($project->gambar && file_exists(public_path('img/projects/' . $project->gambar))) {
+            if (
+                $project->gambar &&
+                file_exists(public_path('img/projects/' . $project->gambar))
+            ) {
                 @unlink(public_path('img/projects/' . $project->gambar));
             }
 
             $file = $request->file('gambar');
             $filename = time() . '_' . $file->getClientOriginalName();
+
             $file->move(public_path('img/projects'), $filename);
             $project->gambar = $filename;
         }
 
         $project->save();
 
-        return redirect('/#project')->with('success', 'Project berhasil diperbarui!');
+        return redirect('/#project')
+            ->with('success', 'Project berhasil diperbarui!');
     }
 
     public function destroyProject($id)
     {
         $project = Project::findOrFail($id);
-        if ($project->gambar && file_exists(public_path('img/projects/' . $project->gambar))) {
+
+        if (
+            $project->gambar &&
+            file_exists(public_path('img/projects/' . $project->gambar))
+        ) {
             @unlink(public_path('img/projects/' . $project->gambar));
         }
+
         $project->delete();
 
-        return redirect('/#project')->with('success', 'Project berhasil dihapus!');
+        return redirect('/#project')
+            ->with('success', 'Project berhasil dihapus!');
     }
 
-    // --- CRUD SERTIFIKAT & PRESTASI ---
-    public function storeCertificate(Request $request) {
+    // CRUD SERTIFIKAT & PRESTASI
+    public function storeCertificate(Request $request)
+    {
         $request->validate([
             'nama_sertifikat' => 'required',
             'pemberi' => 'required',
@@ -160,7 +184,11 @@ class AdminController extends Controller
         ]);
 
         $imgName = 'cert_' . time() . '.' . $request->gambar->extension();
-        $request->gambar->move(public_path('img/certificates'), $imgName);
+
+        $request->gambar->move(
+            public_path('img/certificates'),
+            $imgName
+        );
 
         Certificate::create([
             'nama_sertifikat' => $request->nama_sertifikat,
@@ -169,21 +197,27 @@ class AdminController extends Controller
             'gambar' => $imgName,
         ]);
 
-        return redirect('/#sertifikat')->with('success', 'Sertifikat berhasil ditambahkan!');
+        return redirect('/#sertifikat')
+            ->with('success', 'Sertifikat berhasil ditambahkan!');
     }
 
-    public function destroyCertificate($id) {
+    public function destroyCertificate($id)
+    {
         $cert = Certificate::findOrFail($id);
+
         $path = public_path('img/certificates/' . $cert->gambar);
+
         if (File::exists($path)) {
             File::delete($path);
         }
+
         $cert->delete();
-        
-        return redirect('/#sertifikat')->with('success', 'Sertifikat berhasil dihapus!');
+
+        return redirect('/#sertifikat')
+            ->with('success', 'Sertifikat berhasil dihapus!');
     }
 
-    // --- KELOLA PROFIL & UPLOAD CV DIGITAL ---
+    // KELOLA PROFIL & UPLOAD CV DIGITAL
     public function updateProfile(Request $request)
     {
         $request->validate([
@@ -193,15 +227,19 @@ class AdminController extends Controller
         if ($request->hasFile('file_cv')) {
             $file = $request->file('file_cv');
             $filename = time() . '_' . $file->getClientOriginalName();
-            
+
             $file->move(public_path('files'), $filename);
 
             $profile = Profile::first();
+
             if (!$profile) {
                 $profile = new Profile();
             }
 
-            if ($profile->file_cv && file_exists(public_path('files/' . $profile->file_cv))) {
+            if (
+                $profile->file_cv &&
+                file_exists(public_path('files/' . $profile->file_cv))
+            ) {
                 @unlink(public_path('files/' . $profile->file_cv));
             }
 
@@ -209,6 +247,7 @@ class AdminController extends Controller
             $profile->save();
         }
 
-        return redirect()->back()->with('success', 'CV Digital berhasil diperbarui!');
+        return redirect()->back()
+            ->with('success', 'CV Digital berhasil diperbarui!');
     }
 }
