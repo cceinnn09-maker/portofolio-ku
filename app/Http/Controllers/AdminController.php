@@ -15,15 +15,59 @@ use Illuminate\Support\Facades\File;
 
 class AdminController extends Controller
 {
-    // Menampilkan Dashboard Admin beserta semua data termasuk sertifikat
+    // Menampilkan Dashboard Admin beserta semua data termasuk sertifikat & pesan
     public function index() {
         $projects = Project::all();
         $profile = Profile::first();
         $skills = Skill::all();
-        $certificates = Certificate::all(); // <-- Pastikan ini ada
+        $certificates = Certificate::all();
         $messages = Message::latest()->get();
+        $testimonials = Testimonial::latest()->get();
 
-        return view('home', compact('projects', 'profile', 'skills', 'certificates', 'messages'));
+        return view('home', compact('projects', 'profile', 'skills', 'certificates', 'messages', 'testimonials'));
+    }
+
+    // --- SIMPAN PESAN DARI PENGUNJUNG ---
+    public function storeMessage(Request $request)
+    {
+        $request->validate([
+            'nama_pengirim' => 'required|string|max:255',
+            'pesan' => 'required|string',
+        ]);
+
+        Message::create([
+            'nama_pengirim' => $request->nama_pengirim,
+            'email' => $request->email,
+            'pesan' => $request->pesan,
+        ]);
+
+        return redirect()->back()->with('success', 'Pesan berhasil dikirim!');
+    }
+
+    // --- CRUD TESTIMONI ---
+    public function storeTestimonial(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'profesi' => 'required|string|max:255',
+            'pesan' => 'required|string',
+        ]);
+
+        Testimonial::create([
+            'nama' => $request->nama,
+            'profesi' => $request->profesi,
+            'pesan' => $request->pesan,
+        ]);
+
+        return redirect('/#testimoni')->with('success', 'Testimoni berhasil ditambahkan!');
+    }
+
+    public function destroyTestimonial($id)
+    {
+        $testimonial = Testimonial::findOrFail($id);
+        $testimonial->delete();
+
+        return redirect('/#testimoni')->with('success', 'Testimoni berhasil dihapus!');
     }
 
     // --- CRUD PROYEK ---
@@ -106,7 +150,7 @@ class AdminController extends Controller
         return redirect('/#project')->with('success', 'Project berhasil dihapus!');
     }
 
-    // --- CRUD SERTIFIKAT & PRESTASI (Poin E) ---
+    // --- CRUD SERTIFIKAT & PRESTASI ---
     public function storeCertificate(Request $request) {
         $request->validate([
             'nama_sertifikat' => 'required',
@@ -150,16 +194,13 @@ class AdminController extends Controller
             $file = $request->file('file_cv');
             $filename = time() . '_' . $file->getClientOriginalName();
             
-            // Simpan ke folder public/files/
             $file->move(public_path('files'), $filename);
 
-            // Cari data profil pertama atau buat baru
             $profile = Profile::first();
             if (!$profile) {
                 $profile = new Profile();
             }
 
-            // Hapus file lama jika ada
             if ($profile->file_cv && file_exists(public_path('files/' . $profile->file_cv))) {
                 @unlink(public_path('files/' . $profile->file_cv));
             }
@@ -168,6 +209,6 @@ class AdminController extends Controller
             $profile->save();
         }
 
-        return redirect('/#kelola-karya')->with('success', 'CV Digital berhasil diperbarui!');
+        return redirect()->back()->with('success', 'CV Digital berhasil diperbarui!');
     }
 }

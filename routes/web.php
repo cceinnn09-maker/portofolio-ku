@@ -8,24 +8,40 @@ use App\Models\Project;
 use App\Models\Profile;
 use App\Models\Message;
 use App\Models\Certificate;
+use App\Models\Testimonial;
+use App\Models\Skill;
 
 // Halaman Utama Portofolio (Beranda, Tentang, Skills, Projek, Sertifikat, Blog, Testimoni, Kontak)
 Route::get('/', function () {
     return view('home', [
         'projects' => Project::all(),
         'profile' => Profile::first(),
+        'skills' => Skill::all(),
         'certificates' => Certificate::all(),
-        'messages' => Message::latest()->get()
+        'messages' => Message::latest()->get(),
+        'testimonis' => Testimonial::latest()->get()
     ]);
 })->name('home');
 
-// Halaman Detail Blog / Artikel Pengembang (Poin N)
+// Halaman Detail Blog / Artikel Pengembang
 Route::get('/blog/{id}', function ($id) {
     return view('blog.detail', ['id' => $id]);
 });
 
-// Kirim Pesan / Kesan Pesan dari Pengunjung (Poin I)
+// Kirim Pesan / Kesan Pesan dari Pengunjung
 Route::post('/kirim-pesan', [AdminController::class, 'storeMessage'])->name('pesan.store');
+
+// Download CV Digital Pengunjung
+Route::get('/download-cv', function () {
+    $profile = Profile::first();
+    if ($profile && $profile->file_cv) {
+        $path = public_path('files/' . $profile->file_cv);
+        if (file_exists($path)) {
+            return response()->download($path);
+        }
+    }
+    return redirect()->back()->with('error', 'File CV belum tersedia.');
+})->name('cv.download');
 
 // Halaman & Proses Login Admin
 Route::get('/login', function () {
@@ -56,14 +72,18 @@ Route::post('/logout', function (Request $request) {
     return redirect('/');
 })->name('logout')->middleware('auth');
 
-// Rute Khusus Admin (CRUD Proyek, Profil/CV, & Sertifikat)
+// Rute Khusus Admin (CRUD Proyek, Profil/CV, Sertifikat, & Testimoni)
 Route::middleware('auth')->group(function () {
     Route::post('/admin/store', [AdminController::class, 'storeProject'])->name('projects.store');
     Route::put('/admin/update/{id}', [AdminController::class, 'updateProject'])->name('projects.update');
     Route::delete('/admin/delete/{id}', [AdminController::class, 'destroyProject'])->name('projects.delete');
     Route::post('/admin/profile/update', [AdminController::class, 'updateProfile'])->name('profile.update');
     
-    // Sertifikat & Prestasi (Poin E)
+    // Sertifikat & Prestasi
     Route::post('/admin/certificate/store', [AdminController::class, 'storeCertificate'])->name('certificates.store');
     Route::delete('/admin/certificate/delete/{id}', [AdminController::class, 'destroyCertificate'])->name('certificates.delete');
+
+    // Testimoni (Admin tambah/hapus)
+    Route::post('/admin/testimonial/store', [AdminController::class, 'storeTestimonial'])->name('testimonial.store');
+    Route::delete('/admin/testimonial/delete/{id}', [AdminController::class, 'destroyTestimonial'])->name('testimonial.delete');
 });
