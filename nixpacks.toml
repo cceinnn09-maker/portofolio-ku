@@ -5,3 +5,6 @@ cmds = [
     "php artisan cache:clear",
     "php artisan config:clear"
 ]
+
+[start]
+cmd = "php -S 0.0.0.0:$PORT -t public"
