@@ -169,7 +169,12 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE'),
+    // Fallback otomatis: jika APP_URL memakai HTTPS, cookie tetap dikirim aman
+    // walaupun SESSION_SECURE_COOKIE lupa diset di environment production.
+    'secure' => env(
+        'SESSION_SECURE_COOKIE',
+        str_starts_with((string) env('APP_URL', ''), 'https://')
+    ),
 
     /*
     |--------------------------------------------------------------------------
