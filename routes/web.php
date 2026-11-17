@@ -12,7 +12,10 @@ use App\Models\Certificate;
 use App\Models\Testimonial;
 use App\Models\Skill;
 
-// Halaman Utama Portofolio
+// ==========================================
+// HALAMAN UTAMA PORTOFOLIO
+// ==========================================
+
 Route::get('/', function () {
     return view('home', [
         'projects' => Project::all(),
@@ -24,21 +27,30 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-// Halaman Detail Blog
+
+// ==========================================
+// HALAMAN DETAIL BLOG
+// ==========================================
+
 Route::get('/blog/{id}', function ($id) {
     return view('blog.detail', ['id' => $id]);
 });
 
-// Kirim Pesan Pengunjung
+
+// ==========================================
+// FITUR PENGUNJUNG
+// ==========================================
+
+// Kirim pesan pengunjung
 Route::post('/kirim-pesan', [AdminController::class, 'storeMessage'])
     ->name('pesan.store');
 
-// Kirim Testimoni Pengunjung
-// Bisa diakses tanpa login admin
+// Kirim testimoni pengunjung
+// Tidak memerlukan login admin
 Route::post('/admin/testimonial/store', [AdminController::class, 'storeTestimonial'])
     ->name('testimonial.store');
 
-// Download CV Digital
+// Download CV
 Route::get('/download-cv', function () {
     $profile = Profile::first();
 
@@ -53,43 +65,69 @@ Route::get('/download-cv', function () {
     return redirect()->back()->with('error', 'File CV belum tersedia.');
 })->name('cv.download');
 
-// Halaman Login Admin
+
+// ==========================================
+// LOGIN ADMIN
+// ==========================================
+
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login')->middleware('guest');
 
-// Proses Login Admin
+// Proses login
 Route::post('/login', function (Request $request) {
+
     $credentials = $request->validate([
         'email' => ['required', 'email'],
         'password' => ['required'],
     ]);
 
     if (Auth::attempt($credentials)) {
+
         $request->session()->regenerate();
 
-        return redirect()->intended('/');
+        // Setelah login langsung ke dashboard admin
+        return redirect()->route('admin.index');
     }
 
     return back()->withErrors([
         'email' => 'Email atau password yang Anda masukkan salah.',
     ])->onlyInput('email');
+
 })->middleware('guest');
 
-// Proses Logout
+
+// ==========================================
+// LOGOUT ADMIN
+// ==========================================
+
 Route::post('/logout', function (Request $request) {
+
     Auth::logout();
 
     $request->session()->invalidate();
     $request->session()->regenerateToken();
 
     return redirect('/');
+
 })->name('logout')->middleware('auth');
 
-// Route Khusus Admin
+
+// ==========================================
+// ROUTE KHUSUS ADMIN
+// ==========================================
+
 Route::middleware('auth')->group(function () {
 
-    // CRUD Proyek
+    // Dashboard Admin
+    Route::get('/admin', [AdminController::class, 'index'])
+        ->name('admin.index');
+
+
+    // ======================================
+    // CRUD PROYEK
+    // ======================================
+
     Route::post('/admin/store', [AdminController::class, 'storeProject'])
         ->name('projects.store');
 
@@ -99,18 +137,31 @@ Route::middleware('auth')->group(function () {
     Route::delete('/admin/delete/{id}', [AdminController::class, 'destroyProject'])
         ->name('projects.delete');
 
-    // Update Profil dan CV
+
+    // ======================================
+    // UPDATE PROFIL DAN CV
+    // ======================================
+
     Route::post('/admin/profile/update', [AdminController::class, 'updateProfile'])
         ->name('profile.update');
 
-    // Sertifikat dan Prestasi
+
+    // ======================================
+    // SERTIFIKAT DAN PRESTASI
+    // ======================================
+
     Route::post('/admin/certificate/store', [AdminController::class, 'storeCertificate'])
         ->name('certificates.store');
 
     Route::delete('/admin/certificate/delete/{id}', [AdminController::class, 'destroyCertificate'])
         ->name('certificates.delete');
 
-    // Hapus Testimoni (Khusus Admin)
+
+    // ======================================
+    // TESTIMONI KHUSUS ADMIN
+    // ======================================
+
+    // Hapus testimoni
     Route::delete('/admin/testimonial/delete/{id}', [AdminController::class, 'destroyTestimonial'])
         ->name('testimonial.delete');
 
