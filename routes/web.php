@@ -88,12 +88,17 @@ Route::post('/login', function (Request $request) {
         'password' => ['required'],
     ]);
 
+    // Coba login menggunakan email dan password
     if (Auth::attempt($credentials)) {
+
+        // Perbarui session setelah login berhasil
         $request->session()->regenerate();
 
-        return redirect()->route('admin.dashboard');
+        // Arahkan langsung ke panel admin
+        return redirect('/admin');
     }
 
+    // Jika login gagal
     return back()->withErrors([
         'email' => 'Email atau password yang Anda masukkan salah.',
     ])->onlyInput('email');
@@ -107,7 +112,7 @@ Route::post('/login', function (Request $request) {
 
 Route::middleware('auth')->group(function () {
 
-    // ARAHKAN ADMIN KE PANEL KONTROL DI HOME.BLADE.PHP
+    // DASHBOARD ADMIN
     Route::get('/admin', function () {
         return redirect('/#kelola-karya');
     })->name('admin.dashboard');
