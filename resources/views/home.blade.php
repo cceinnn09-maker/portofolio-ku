@@ -619,35 +619,62 @@
             </div>
 
         </div>
-        <!-- Bagian Kotak Masuk Pesan Admin -->
-<div class="card my-4 p-4 shadow-sm bg-white rounded">
-    <h3 class="text-xl font-bold mb-4 text-gray-800">📩 Kotak Masuk Pesan Pengunjung</h3>
+<!-- Bagian Kotak Masuk Pesan Admin (Modern Clean UI) -->
+<div class="my-8 bg-white rounded-2xl shadow-md border border-gray-100 p-6 sm:p-8 transition-all hover:shadow-lg">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-gray-100 gap-4">
+        <div>
+            <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <span class="p-2 bg-purple-100 text-purple-600 rounded-lg">
+                    📩
+                </span>
+                Kotak Masuk Pesan
+            </h3>
+            <p class="text-sm text-gray-500 mt-1">Daftar pesan dan masukan dari pengunjung website portofoliomu.</p>
+        </div>
+        @if(isset($messages) && $messages->count() > 0)
+            <span class="px-3 py-1 bg-purple-50 text-purple-600 text-xs font-semibold rounded-full w-fit">
+                {{ $messages->count() }} Pesan Masuk
+            </span>
+        @endif
+    </div>
     
     @if(isset($messages) && $messages->count() > 0)
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama Pengirim</th>
-                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pesan</th>
-                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Waktu</th>
+        <div class="overflow-x-auto mt-6">
+            <table class="min-w-full divide-y divide-gray-100">
+                <thead>
+                    <tr class="bg-gray-50/70 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        <th class="px-5 py-3.5 rounded-l-xl">Pengirim</th>
+                        <th class="px-5 py-3.5">Email</th>
+                        <th class="px-5 py-3.5">Pesan</th>
+                        <th class="px-5 py-3.5 rounded-r-xl text-right">Waktu</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="divide-y divide-gray-100">
                     @foreach($messages as $msg)
-                        <tr>
-                            <td class="px-4 py-2 text-sm font-semibold text-gray-900">{{ $msg->nama_pengirim }}</td>
-                            <td class="px-4 py-2 text-sm text-gray-600">{{ $msg->email ?? '-' }}</td>
-                            <td class="px-4 py-2 text-sm text-gray-800">{{ $msg->pesan }}</td>
-                            <td class="px-4 py-2 text-xs text-gray-400">{{ $msg->created_at->diffForHumans() }}</td>
+                        <tr class="hover:bg-purple-50/30 transition-colors">
+                            <td class="px-5 py-4 whitespace-nowrap">
+                                <div class="font-semibold text-gray-800 text-sm">{{ $msg->nama_pengirim }}</div>
+                            </td>
+                            <td class="px-5 py-4 whitespace-nowrap">
+                                <span class="text-sm text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md">{{ $msg->email ?? 'Tanpa Email' }}</span>
+                            </td>
+                            <td class="px-5 py-4 text-sm text-gray-700 max-w-xs truncate">
+                                {{ $msg->pesan }}
+                            </td>
+                            <td class="px-5 py-4 whitespace-nowrap text-xs text-gray-400 text-right">
+                                {{ $msg->created_at->diffForHumans() }}
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     @else
-        <p class="text-gray-500 text-sm">Belum ada pesan masuk dari pengunjung.</p>
+        <div class="text-center py-12">
+            <div class="text-4xl mb-3">📭</div>
+            <p class="text-gray-500 text-sm font-medium">Belum ada pesan masuk dari pengunjung.</p>
+            <p class="text-gray-400 text-xs mt-1">Pesan yang dikirim melalui form kontak akan muncul di sini secara otomatis.</p>
+        </div>
     @endif
 </div>
     </section>
