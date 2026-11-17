@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -11,7 +12,7 @@ use App\Models\Certificate;
 use App\Models\Testimonial;
 use App\Models\Skill;
 
-// Halaman Utama Portofolio (Beranda, Tentang, Skills, Projek, Sertifikat, Blog, Testimoni, Kontak)
+// Halaman Utama Portofolio
 Route::get('/', function () {
     return view('home', [
         'projects' => Project::all(),
@@ -23,31 +24,41 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-// Halaman Detail Blog / Artikel Pengembang
+// Halaman Detail Blog
 Route::get('/blog/{id}', function ($id) {
     return view('blog.detail', ['id' => $id]);
 });
 
-// Kirim Pesan / Kesan Pesan dari Pengunjung
-Route::post('/kirim-pesan', [AdminController::class, 'storeMessage'])->name('pesan.store');
+// Kirim Pesan Pengunjung
+Route::post('/kirim-pesan', [AdminController::class, 'storeMessage'])
+    ->name('pesan.store');
 
-// Download CV Digital Pengunjung
+// Kirim Testimoni Pengunjung
+// Bisa diakses tanpa login admin
+Route::post('/admin/testimonial/store', [AdminController::class, 'storeTestimonial'])
+    ->name('testimonial.store');
+
+// Download CV Digital
 Route::get('/download-cv', function () {
     $profile = Profile::first();
+
     if ($profile && $profile->file_cv) {
         $path = public_path('files/' . $profile->file_cv);
+
         if (file_exists($path)) {
             return response()->download($path);
         }
     }
+
     return redirect()->back()->with('error', 'File CV belum tersedia.');
 })->name('cv.download');
 
-// Halaman & Proses Login Admin
+// Halaman Login Admin
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login')->middleware('guest');
 
+// Proses Login Admin
 Route::post('/login', function (Request $request) {
     $credentials = $request->validate([
         'email' => ['required', 'email'],
@@ -56,6 +67,7 @@ Route::post('/login', function (Request $request) {
 
     if (Auth::attempt($credentials)) {
         $request->session()->regenerate();
+
         return redirect()->intended('/');
     }
 
@@ -67,23 +79,39 @@ Route::post('/login', function (Request $request) {
 // Proses Logout
 Route::post('/logout', function (Request $request) {
     Auth::logout();
+
     $request->session()->invalidate();
     $request->session()->regenerateToken();
+
     return redirect('/');
 })->name('logout')->middleware('auth');
 
-// Rute Khusus Admin (CRUD Proyek, Profil/CV, Sertifikat, & Testimoni)
+// Route Khusus Admin
 Route::middleware('auth')->group(function () {
-    Route::post('/admin/store', [AdminController::class, 'storeProject'])->name('projects.store');
-    Route::put('/admin/update/{id}', [AdminController::class, 'updateProject'])->name('projects.update');
-    Route::delete('/admin/delete/{id}', [AdminController::class, 'destroyProject'])->name('projects.delete');
-    Route::post('/admin/profile/update', [AdminController::class, 'updateProfile'])->name('profile.update');
-    
-    // Sertifikat & Prestasi
-    Route::post('/admin/certificate/store', [AdminController::class, 'storeCertificate'])->name('certificates.store');
-    Route::delete('/admin/certificate/delete/{id}', [AdminController::class, 'destroyCertificate'])->name('certificates.delete');
 
-    // Testimoni (Admin tambah/hapus)
-    Route::post('/admin/testimonial/store', [AdminController::class, 'storeTestimonial'])->name('testimonial.store');
-    Route::delete('/admin/testimonial/delete/{id}', [AdminController::class, 'destroyTestimonial'])->name('testimonial.delete');
+    // CRUD Proyek
+    Route::post('/admin/store', [AdminController::class, 'storeProject'])
+        ->name('projects.store');
+
+    Route::put('/admin/update/{id}', [AdminController::class, 'updateProject'])
+        ->name('projects.update');
+
+    Route::delete('/admin/delete/{id}', [AdminController::class, 'destroyProject'])
+        ->name('projects.delete');
+
+    // Update Profil dan CV
+    Route::post('/admin/profile/update', [AdminController::class, 'updateProfile'])
+        ->name('profile.update');
+
+    // Sertifikat dan Prestasi
+    Route::post('/admin/certificate/store', [AdminController::class, 'storeCertificate'])
+        ->name('certificates.store');
+
+    Route::delete('/admin/certificate/delete/{id}', [AdminController::class, 'destroyCertificate'])
+        ->name('certificates.delete');
+
+    // Hapus Testimoni (Khusus Admin)
+    Route::delete('/admin/testimonial/delete/{id}', [AdminController::class, 'destroyTestimonial'])
+        ->name('testimonial.delete');
+
 });
