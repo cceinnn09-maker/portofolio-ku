@@ -177,7 +177,7 @@
         </div>
     </section>
 
-    <!-- D. GALERI PROJEK / MY PROJECT (DENGAN PENCARIAN & FILTER - POIN O) -->
+    <!-- D. GALERI PROJEK / MY PROJECT -->
     <section id="project" class="py-28 bg-white dark:bg-slate-800/50">
         <div class="max-w-6xl mx-auto px-6">
             <div class="text-center mb-12">
@@ -339,7 +339,7 @@
         </div>
     </section>
 
-    <!-- N. BLOG PENGEMBANG / ARTIKEL (WAJIB) -->
+    <!-- N. BLOG PENGEMBANG / ARTIKEL -->
     <section id="blog" class="py-28">
         <div class="max-w-6xl mx-auto px-6">
             <div class="text-center mb-16">
@@ -381,7 +381,7 @@
         </div>
     </section>
 
-   <!-- M. TESTIMONI & FORM ULASAN PUBLIK -->
+    <!-- M. TESTIMONI & FORM ULASAN PUBLIK -->
     <section id="testimoni" class="py-28 bg-white dark:bg-slate-800/50">
         <div class="max-w-6xl mx-auto px-6">
             <div class="text-center mb-16">
@@ -459,7 +459,7 @@
         </div>
     </section>
 
-    <!-- FORMULIR KESAN DAN PESAN & KONTAK -->
+    <!-- FORMULIR KONTAK -->
     <section id="kontak" class="py-28">
         <div class="max-w-4xl mx-auto px-6">
             <div class="text-center mb-12">
@@ -507,15 +507,23 @@
         </div>
     </section>
 
-    <!-- DASHBOARD ADMIN (KELOLA KARYA, SERTIFIKAT, FOTO PROFIL, & CV) -->
+    <!-- ======================================================== -->
+    <!-- PANEL KHUSUS ADMIN (Hanya Muncul Saat Login / @auth)      -->
+    <!-- ======================================================== -->
     @auth
-    <section id="kelola-karya" class="py-28 border-t border-purple-100 dark:border-slate-700 bg-white dark:bg-slate-800/50">
-        <div class="max-w-2xl mx-auto px-6 space-y-10">
+    <section id="kelola-karya" class="py-28 border-t border-purple-200 dark:border-slate-700 bg-purple-50/50 dark:bg-slate-900">
+        <div class="max-w-4xl mx-auto px-6 space-y-12">
             
-            <!-- 1. Form Proyek -->
+            <div class="text-center">
+                <span class="px-3 py-1 bg-purple-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider">Mode Admin Aktif</span>
+                <h2 class="text-2xl font-bold mt-2">Panel Kontrol & Kelola Data</h2>
+                <p class="text-xs text-slate-500 mt-1">Tambah, edit project, sertifikat, profil, serta pantau pesan dan testimoni.</p>
+            </div>
+
+            <!-- 1. Form Kelola Proyek -->
             <div class="bg-white dark:bg-slate-800 p-10 rounded-[2.5rem] shadow-xl border border-purple-100 dark:border-slate-700">
-                <h2 id="form-title" class="text-2xl font-bold mb-1 text-center text-slate-800 dark:text-slate-100">Tambah Project Baru ✦</h2>
-                <p id="form-subtitle" class="text-xs text-slate-400 text-center mb-8">Panel kendali CRUD data portofolio & standar detail UKK</p>
+                <h2 id="form-title" class="text-xl font-bold mb-1 text-center text-slate-800 dark:text-slate-100">Tambah Project Baru ✦</h2>
+                <p id="form-subtitle" class="text-xs text-slate-400 text-center mb-8">Panel kendali CRUD data portofolio</p>
                 
                 <form id="project-form" action="{{ route('projects.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                     @csrf
@@ -554,7 +562,7 @@
                         </div>
                         <div>
                             <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Peran Saya</label>
-                            <input type="text" id="peran" name="peran" placeholder="Contoh: UI/UX Designer (Tim Kolaborasi)" class="w-full bg-purple-50/30 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-purple-400 transition">
+                            <input type="text" id="peran" name="peran" placeholder="Contoh: UI/UX Designer" class="w-full bg-purple-50/30 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-purple-400 transition">
                         </div>
                     </div>
 
@@ -576,7 +584,7 @@
                     </div>
 
                     <div class="flex flex-col gap-2 pt-2">
-                        <button type="submit" id="submit-btn" class="w-full bg-purple-500 hover:bg-purple-600 text-white text-sm font-bold py-3.5 rounded-xl transition shadow-md shadow-purple-200 dark:shadow-none">
+                        <button type="submit" id="submit-btn" class="w-full bg-purple-500 hover:bg-purple-600 text-white text-sm font-bold py-3.5 rounded-xl transition shadow-md">
                             Simpan Project Baru
                         </button>
                         <button type="button" id="cancel-btn" onclick="resetToStoreMode()" class="w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-600 dark:text-slate-300 text-sm font-semibold py-2.5 rounded-xl transition hidden">
@@ -589,12 +597,10 @@
             <!-- 2. Form Sertifikat -->
             <div class="bg-white dark:bg-slate-800 p-10 rounded-[2.5rem] shadow-xl border border-purple-100 dark:border-slate-700">
                 <h2 class="text-xl font-bold mb-1 text-center text-slate-800 dark:text-slate-100">Tambah Sertifikat / Prestasi ✦</h2>
-                <p class="text-xs text-slate-400 text-center mb-6">Upload dokumen atau piagam penghargaan</p>
-                
-                <form action="{{ route('certificates.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <form action="{{ route('certificates.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4 mt-4">
                     @csrf
                     <div>
-                        <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Nama Sertifikat / Penghargaan</label>
+                        <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Nama Sertifikat</label>
                         <input type="text" name="nama_sertifikat" placeholder="Contoh: Sertifikat Kompetensi" class="w-full bg-purple-50/30 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-xl px-4 py-3 text-xs outline-none focus:border-purple-400 transition" required>
                     </div>
                     <div>
@@ -615,46 +621,12 @@
                 </form>
             </div>
 
-            <!-- 3. Form Kelola Profil (Ganti Foto & Upload CV) -->
-            <div class="bg-white dark:bg-slate-800 p-10 rounded-[2.5rem] shadow-xl border border-purple-100 dark:border-slate-700">
-                <h2 class="text-xl font-bold mb-1 text-center text-slate-800 dark:text-slate-100">Kelola Profil & CV ✦</h2>
-                <p class="text-xs text-slate-400 text-center mb-6">Ganti foto profil atau unggah file CV terbaru (PDF)</p>
-                
-                <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-                    @csrf
-                    <div>
-                        <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Ganti Foto Profil (Opsional)</label>
-                        <input type="file" name="foto_profil" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-100 file:text-purple-700 hover:file:bg-purple-200 cursor-pointer">
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Upload File CV (Format PDF, Maks 2MB)</label>
-                        <input type="file" name="file_cv" accept=".pdf" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-100 file:text-purple-700 hover:file:bg-purple-200 cursor-pointer">
-                    </div>
-                    <button type="submit" class="w-full bg-purple-500 hover:bg-purple-600 text-white text-xs font-bold py-3.5 rounded-xl transition shadow-md">
-                        Simpan Perubahan Profil
-                    </button>
-                </form>
-            </div>
-
-        </div>
-        <!-- @AUTH: PANEL KHUSUS ADMIN (Hanya Muncul Saat Login) -->
-    @auth
-    <section id="kelola-karya" class="py-16 bg-purple-100/50 dark:bg-slate-900 border-t border-purple-200 dark:border-slate-800">
-        <div class="max-w-5xl mx-auto px-6 space-y-8">
-            <div class="text-center">
-                <span class="px-3 py-1 bg-purple-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider">Mode Admin Aktif</span>
-                <h2 class="text-2xl font-bold mt-2">Panel Kontrol & Kotak Masuk</h2>
-                <p class="text-xs text-slate-500 mt-1">Kelola pesan masuk dan testimoni pengunjung dari satu tempat.</p>
-            </div>
-
-            <!-- 1. Kotak Masuk Pesan Pengunjung (Compact & Professional) -->
-            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-purple-100 dark:border-slate-700 overflow-hidden">
-                <div class="px-5 py-4 bg-purple-50/50 dark:bg-slate-700/50 border-b border-purple-100 dark:border-slate-700 flex items-center justify-between">
-                    <h3 class="text-sm font-bold flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-purple-600"></span>
-                        Pesan Masuk Pengunjung ({{ isset($messages) ? $messages->count() : 0 }})
-                    </h3>
-                </div>
+            <!-- 3. Kotak Masuk Pesan Pengunjung (Admin) -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-purple-100 dark:border-slate-700 overflow-hidden p-6">
+                <h3 class="text-base font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-purple-600"></span>
+                    Kotak Masuk Pesan Pengunjung ({{ isset($messages) ? $messages->count() : 0 }})
+                </h3>
                 @if(isset($messages) && $messages->count() > 0)
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-slate-700 text-xs">
@@ -679,18 +651,16 @@
                         </table>
                     </div>
                 @else
-                    <div class="px-5 py-6 text-center text-slate-400 text-xs">Belum ada pesan masuk.</div>
+                    <p class="text-slate-400 text-xs text-center py-4">Belum ada pesan masuk.</p>
                 @endif
             </div>
 
-            <!-- 2. Kelola Testimoni Pengunjung (Admin) -->
-            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-purple-100 dark:border-slate-700 overflow-hidden">
-                <div class="px-5 py-4 bg-purple-50/50 dark:bg-slate-700/50 border-b border-purple-100 dark:border-slate-700 flex items-center justify-between">
-                    <h3 class="text-sm font-bold flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
-                        Kelola Testimoni ({{ isset($testimonis) ? $testimonis->count() : 0 }})
-                    </h3>
-                </div>
+            <!-- 4. Kelola Testimoni Pengunjung (Admin dengan Tombol Hapus) -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-purple-100 dark:border-slate-700 overflow-hidden p-6">
+                <h3 class="text-base font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                    Kelola Testimoni ({{ isset($testimonis) ? $testimonis->count() : 0 }})
+                </h3>
                 @if(isset($testimonis) && $testimonis->count() > 0)
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-slate-700 text-xs">
@@ -719,68 +689,11 @@
                         </table>
                     </div>
                 @else
-                    <div class="px-5 py-6 text-center text-slate-400 text-xs">Belum ada testimoni masuk.</div>
+                    <p class="text-slate-400 text-xs text-center py-4">Belum ada testimoni masuk.</p>
                 @endif
             </div>
+
         </div>
-    </section>
-    @endauth
-<!-- Bagian Kotak Masuk Pesan Admin (Compact & Professional) -->
-<div class="my-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-    <!-- Header Card -->
-    <div class="px-5 py-4 bg-gray-50/50 border-b border-gray-200 flex items-center justify-between">
-        <div>
-            <h3 class="text-base font-semibold text-gray-800 flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-purple-600"></span>
-                Pesan Masuk Pengunjung
-            </h3>
-            <p class="text-xs text-gray-500 mt-0.5">Kelola pesan dan masukan dari formulir kontak portofolio.</p>
-        </div>
-        @if(isset($messages) && $messages->count() > 0)
-            <span class="px-2.5 py-0.5 bg-purple-100 text-purple-700 text-xs font-medium rounded-full">
-                {{ $messages->count() }} Total
-            </span>
-        @endif
-    </div>
-    
-    <!-- Table Body -->
-    @if(isset($messages) && $messages->count() > 0)
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 text-sm">
-                <thead class="bg-gray-50 text-gray-600 font-medium">
-                    <tr>
-                        <th class="px-5 py-3 text-left text-xs uppercase tracking-wider">Nama</th>
-                        <th class="px-5 py-3 text-left text-xs uppercase tracking-wider">Email</th>
-                        <th class="px-5 py-3 text-left text-xs uppercase tracking-wider">Pesan</th>
-                        <th class="px-5 py-3 text-right text-xs uppercase tracking-wider">Waktu</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 bg-white text-gray-700">
-                    @foreach($messages as $msg)
-                        <tr class="hover:bg-gray-50/80 transition-colors">
-                            <td class="px-5 py-3.5 font-medium text-gray-900 whitespace-nowrap">
-                                {{ $msg->nama_pengirim }}
-                            </td>
-                            <td class="px-5 py-3.5 text-gray-500 whitespace-nowrap">
-                                {{ $msg->email ?? '-' }}
-                            </td>
-                            <td class="px-5 py-3.5 text-gray-600 max-w-xs truncate">
-                                {{ $msg->pesan }}
-                            </td>
-                            <td class="px-5 py-3.5 text-xs text-gray-400 text-right whitespace-nowrap">
-                                {{ $msg->created_at->diffForHumans() }}
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    @else
-        <div class="px-5 py-8 text-center text-gray-500 text-sm">
-            Belum ada pesan masuk.
-        </div>
-    @endif
-</div>
     </section>
     @endauth
 
