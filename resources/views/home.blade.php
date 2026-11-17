@@ -619,49 +619,49 @@
             </div>
 
         </div>
-<!-- Bagian Kotak Masuk Pesan Admin (Modern Clean UI) -->
-<div class="my-8 bg-white rounded-2xl shadow-md border border-gray-100 p-6 sm:p-8 transition-all hover:shadow-lg">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-gray-100 gap-4">
+<!-- Bagian Kotak Masuk Pesan Admin (Compact & Professional) -->
+<div class="my-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <!-- Header Card -->
+    <div class="px-5 py-4 bg-gray-50/50 border-b border-gray-200 flex items-center justify-between">
         <div>
-            <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                <span class="p-2 bg-purple-100 text-purple-600 rounded-lg">
-                    📩
-                </span>
-                Kotak Masuk Pesan
+            <h3 class="text-base font-semibold text-gray-800 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-purple-600"></span>
+                Pesan Masuk Pengunjung
             </h3>
-            <p class="text-sm text-gray-500 mt-1">Daftar pesan dan masukan dari pengunjung website portofoliomu.</p>
+            <p class="text-xs text-gray-500 mt-0.5">Kelola pesan dan masukan dari formulir kontak portofolio.</p>
         </div>
         @if(isset($messages) && $messages->count() > 0)
-            <span class="px-3 py-1 bg-purple-50 text-purple-600 text-xs font-semibold rounded-full w-fit">
-                {{ $messages->count() }} Pesan Masuk
+            <span class="px-2.5 py-0.5 bg-purple-100 text-purple-700 text-xs font-medium rounded-full">
+                {{ $messages->count() }} Total
             </span>
         @endif
     </div>
     
+    <!-- Table Body -->
     @if(isset($messages) && $messages->count() > 0)
-        <div class="overflow-x-auto mt-6">
-            <table class="min-w-full divide-y divide-gray-100">
-                <thead>
-                    <tr class="bg-gray-50/70 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        <th class="px-5 py-3.5 rounded-l-xl">Pengirim</th>
-                        <th class="px-5 py-3.5">Email</th>
-                        <th class="px-5 py-3.5">Pesan</th>
-                        <th class="px-5 py-3.5 rounded-r-xl text-right">Waktu</th>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-50 text-gray-600 font-medium">
+                    <tr>
+                        <th class="px-5 py-3 text-left text-xs uppercase tracking-wider">Nama</th>
+                        <th class="px-5 py-3 text-left text-xs uppercase tracking-wider">Email</th>
+                        <th class="px-5 py-3 text-left text-xs uppercase tracking-wider">Pesan</th>
+                        <th class="px-5 py-3 text-right text-xs uppercase tracking-wider">Waktu</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody class="divide-y divide-gray-200 bg-white text-gray-700">
                     @foreach($messages as $msg)
-                        <tr class="hover:bg-purple-50/30 transition-colors">
-                            <td class="px-5 py-4 whitespace-nowrap">
-                                <div class="font-semibold text-gray-800 text-sm">{{ $msg->nama_pengirim }}</div>
+                        <tr class="hover:bg-gray-50/80 transition-colors">
+                            <td class="px-5 py-3.5 font-medium text-gray-900 whitespace-nowrap">
+                                {{ $msg->nama_pengirim }}
                             </td>
-                            <td class="px-5 py-4 whitespace-nowrap">
-                                <span class="text-sm text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md">{{ $msg->email ?? 'Tanpa Email' }}</span>
+                            <td class="px-5 py-3.5 text-gray-500 whitespace-nowrap">
+                                {{ $msg->email ?? '-' }}
                             </td>
-                            <td class="px-5 py-4 text-sm text-gray-700 max-w-xs truncate">
+                            <td class="px-5 py-3.5 text-gray-600 max-w-xs truncate">
                                 {{ $msg->pesan }}
                             </td>
-                            <td class="px-5 py-4 whitespace-nowrap text-xs text-gray-400 text-right">
+                            <td class="px-5 py-3.5 text-xs text-gray-400 text-right whitespace-nowrap">
                                 {{ $msg->created_at->diffForHumans() }}
                             </td>
                         </tr>
@@ -670,10 +670,8 @@
             </table>
         </div>
     @else
-        <div class="text-center py-12">
-            <div class="text-4xl mb-3">📭</div>
-            <p class="text-gray-500 text-sm font-medium">Belum ada pesan masuk dari pengunjung.</p>
-            <p class="text-gray-400 text-xs mt-1">Pesan yang dikirim melalui form kontak akan muncul di sini secara otomatis.</p>
+        <div class="px-5 py-8 text-center text-gray-500 text-sm">
+            Belum ada pesan masuk.
         </div>
     @endif
 </div>
