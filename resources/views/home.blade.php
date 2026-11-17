@@ -381,15 +381,17 @@
         </div>
     </section>
 
-    <!-- M. TESTIMONI -->
+   <!-- M. TESTIMONI & FORM ULASAN PUBLIK -->
     <section id="testimoni" class="py-28 bg-white dark:bg-slate-800/50">
         <div class="max-w-6xl mx-auto px-6">
             <div class="text-center mb-16">
                 <h2 class="text-3xl font-bold">Testimoni & Ulasan <span class="text-purple-400">✦</span></h2>
-                <p class="text-xs text-slate-400 mt-1">Kesan dan pesan dari guru pembimbing, rekan kerja, dan instansi PLK</p>
+                <p class="text-xs text-slate-400 mt-1">Kesan dan pesan dari guru pembimbing, rekan kerja, dan pengunjung</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Grid Card Testimoni (Dinamis dari Database) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                <!-- Testimoni Statis Bawaan -->
                 <div class="bg-purple-50/40 dark:bg-slate-800 p-8 rounded-[2.5rem] border border-purple-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
                     <div>
                         <div class="text-purple-400 text-2xl mb-4"><i class="fa-solid fa-quote-left"></i></div>
@@ -406,37 +408,53 @@
                     </div>
                 </div>
 
-                <div class="bg-purple-50/40 dark:bg-slate-800 p-8 rounded-[2.5rem] border border-purple-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
-                    <div>
-                        <div class="text-purple-400 text-2xl mb-4"><i class="fa-solid fa-quote-left"></i></div>
-                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-light mb-6">
-                            "Seru banget kerja kelompok bareng Ena! Desain UI/UX yang dibuat sangat rapi, terstruktur, dan memudahkan anggota tim lain dalam menerjemahkannya ke dalam program."
-                        </p>
-                    </div>
-                    <div class="flex items-center gap-3 pt-4 border-t border-purple-100 dark:border-slate-700">
-                        <div class="w-10 h-10 rounded-full bg-purple-200 dark:bg-purple-900 flex items-center justify-center font-bold text-purple-700 dark:text-purple-300 text-xs">FR</div>
-                        <div>
-                            <h4 class="font-bold text-xs text-slate-800 dark:text-slate-100">Rekan Tim Proyek</h4>
-                            <p class="text-[10px] text-purple-500 font-medium">Tim Kolaborasi PPLG</p>
+                <!-- Testimoni Dinamis dari Database -->
+                @if(isset($testimonis) && $testimonis->count() > 0)
+                    @foreach($testimonis as $testi)
+                        <div class="bg-purple-50/40 dark:bg-slate-800 p-8 rounded-[2.5rem] border border-purple-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <div class="text-purple-400 text-2xl mb-4"><i class="fa-solid fa-quote-left"></i></div>
+                                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-light mb-6">
+                                    "{{ $testi->pesan ?? $testi->testimonial ?? $testi->content }}"
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-3 pt-4 border-t border-purple-100 dark:border-slate-700">
+                                <div class="w-10 h-10 rounded-full bg-purple-200 dark:bg-purple-900 flex items-center justify-center font-bold text-purple-700 dark:text-purple-300 text-xs uppercase">
+                                    {{ substr($testi->nama ?? $testi->name ?? 'P', 0, 2) }}
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-800 dark:text-slate-100">
+                                        {{ $testi->nama ?? $testi->name ?? 'Pengunjung' }}
+                                    </h4>
+                                    <p class="text-[10px] text-purple-500 font-medium">
+                                        {{ $testi->created_at ? $testi->created_at->diffForHumans() : 'Baru saja' }}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    @endforeach
+                @endif
+            </div>
 
-                <div class="bg-purple-50/40 dark:bg-slate-800 p-8 rounded-[2.5rem] border border-purple-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+            <!-- Form Tambah Testimoni untuk Pengunjung -->
+            <div class="max-w-xl mx-auto bg-white dark:bg-slate-800 p-8 rounded-[2.5rem] border border-purple-100 dark:border-slate-700 shadow-sm">
+                <h3 class="text-lg font-bold text-center mb-2">Berikan Ulasan / Testimoni</h3>
+                <p class="text-xs text-slate-400 text-center mb-6">Bagikan kesan atau pesanmu terhadap portofolio ini.</p>
+                
+                <form action="{{ route('testimonial.store') }}" method="POST" class="space-y-4">
+                    @csrf
                     <div>
-                        <div class="text-purple-400 text-2xl mb-4"><i class="fa-solid fa-quote-left"></i></div>
-                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-light mb-6">
-                            "Selama melaksanakan Praktik Latihan Kerja (PLK) di kantor, Ena menunjukkan sikap profesional, cekatan dalam administrasi digital, dan komunikatif."
-                        </p>
+                        <label class="block text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300">Nama Anda</label>
+                        <input type="text" name="nama" required placeholder="Contoh: Budi Santoso" class="w-full bg-purple-50/40 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-2xl px-4 py-3 text-xs outline-none focus:border-purple-400 transition">
                     </div>
-                    <div class="flex items-center gap-3 pt-4 border-t border-purple-100 dark:border-slate-700">
-                        <div class="w-10 h-10 rounded-full bg-purple-200 dark:bg-purple-900 flex items-center justify-center font-bold text-purple-700 dark:text-purple-300 text-xs">PL</div>
-                        <div>
-                            <h4 class="font-bold text-xs text-slate-800 dark:text-slate-100">Pembimbing Instansi</h4>
-                            <p class="text-[10px] text-purple-500 font-medium">Tempat PLK / Kelurahan</p>
-                        </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300">Pesan / Ulasan</label>
+                        <textarea name="pesan" rows="3" required placeholder="Tuliskan ulasanmu di sini..." class="w-full bg-purple-50/40 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-2xl px-4 py-3 text-xs outline-none focus:border-purple-400 transition"></textarea>
                     </div>
-                </div>
+                    <button type="submit" class="w-full bg-purple-500 text-white font-bold py-3 rounded-2xl text-xs hover:bg-purple-600 transition shadow-md">
+                        Kirim Testimoni
+                    </button>
+                </form>
             </div>
         </div>
     </section>
@@ -619,6 +637,94 @@
             </div>
 
         </div>
+        <!-- @AUTH: PANEL KHUSUS ADMIN (Hanya Muncul Saat Login) -->
+    @auth
+    <section id="kelola-karya" class="py-16 bg-purple-100/50 dark:bg-slate-900 border-t border-purple-200 dark:border-slate-800">
+        <div class="max-w-5xl mx-auto px-6 space-y-8">
+            <div class="text-center">
+                <span class="px-3 py-1 bg-purple-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider">Mode Admin Aktif</span>
+                <h2 class="text-2xl font-bold mt-2">Panel Kontrol & Kotak Masuk</h2>
+                <p class="text-xs text-slate-500 mt-1">Kelola pesan masuk dan testimoni pengunjung dari satu tempat.</p>
+            </div>
+
+            <!-- 1. Kotak Masuk Pesan Pengunjung (Compact & Professional) -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-purple-100 dark:border-slate-700 overflow-hidden">
+                <div class="px-5 py-4 bg-purple-50/50 dark:bg-slate-700/50 border-b border-purple-100 dark:border-slate-700 flex items-center justify-between">
+                    <h3 class="text-sm font-bold flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-purple-600"></span>
+                        Pesan Masuk Pengunjung ({{ isset($messages) ? $messages->count() : 0 }})
+                    </h3>
+                </div>
+                @if(isset($messages) && $messages->count() > 0)
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-slate-700 text-xs">
+                            <thead class="bg-gray-50 dark:bg-slate-900 text-gray-500 font-semibold">
+                                <tr>
+                                    <th class="px-4 py-3 text-left">Nama</th>
+                                    <th class="px-4 py-3 text-left">Email</th>
+                                    <th class="px-4 py-3 text-left">Pesan</th>
+                                    <th class="px-4 py-3 text-right">Waktu</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-800">
+                                @foreach($messages as $msg)
+                                    <tr class="hover:bg-purple-50/30 transition-colors">
+                                        <td class="px-4 py-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">{{ $msg->nama_pengirim }}</td>
+                                        <td class="px-4 py-3 text-slate-500 whitespace-nowrap">{{ $msg->email ?? '-' }}</td>
+                                        <td class="px-4 py-3 text-slate-600 dark:text-slate-300 max-w-xs truncate">{{ $msg->pesan }}</td>
+                                        <td class="px-4 py-3 text-right text-slate-400 whitespace-nowrap">{{ $msg->created_at->diffForHumans() }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="px-5 py-6 text-center text-slate-400 text-xs">Belum ada pesan masuk.</div>
+                @endif
+            </div>
+
+            <!-- 2. Kelola Testimoni Pengunjung (Admin) -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-purple-100 dark:border-slate-700 overflow-hidden">
+                <div class="px-5 py-4 bg-purple-50/50 dark:bg-slate-700/50 border-b border-purple-100 dark:border-slate-700 flex items-center justify-between">
+                    <h3 class="text-sm font-bold flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                        Kelola Testimoni ({{ isset($testimonis) ? $testimonis->count() : 0 }})
+                    </h3>
+                </div>
+                @if(isset($testimonis) && $testimonis->count() > 0)
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-slate-700 text-xs">
+                            <thead class="bg-gray-50 dark:bg-slate-900 text-gray-500 font-semibold">
+                                <tr>
+                                    <th class="px-4 py-3 text-left">Pengirim</th>
+                                    <th class="px-4 py-3 text-left">Isi Testimoni</th>
+                                    <th class="px-4 py-3 text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-800">
+                                @foreach($testimonis as $testi)
+                                    <tr class="hover:bg-indigo-50/30 transition-colors">
+                                        <td class="px-4 py-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">{{ $testi->nama ?? $testi->name ?? 'Tanpa Nama' }}</td>
+                                        <td class="px-4 py-3 text-slate-600 dark:text-slate-300 max-w-md">"{{ $testi->pesan ?? $testi->testimonial ?? $testi->content }}"</td>
+                                        <td class="px-4 py-3 text-right whitespace-nowrap">
+                                            <form action="{{ route('testimonial.delete', $testi->id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus testimoni ini?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="px-2.5 py-1 bg-red-50 text-red-600 hover:bg-red-100 font-bold rounded-lg transition">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="px-5 py-6 text-center text-slate-400 text-xs">Belum ada testimoni masuk.</div>
+                @endif
+            </div>
+        </div>
+    </section>
+    @endauth
 <!-- Bagian Kotak Masuk Pesan Admin (Compact & Professional) -->
 <div class="my-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
     <!-- Header Card -->
