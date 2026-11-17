@@ -619,6 +619,37 @@
             </div>
 
         </div>
+        <!-- Bagian Kotak Masuk Pesan Admin -->
+<div class="card my-4 p-4 shadow-sm bg-white rounded">
+    <h3 class="text-xl font-bold mb-4 text-gray-800">📩 Kotak Masuk Pesan Pengunjung</h3>
+    
+    @if(isset($messages) && $messages->count() > 0)
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama Pengirim</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pesan</th>
+                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Waktu</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach($messages as $msg)
+                        <tr>
+                            <td class="px-4 py-2 text-sm font-semibold text-gray-900">{{ $msg->nama_pengirim }}</td>
+                            <td class="px-4 py-2 text-sm text-gray-600">{{ $msg->email ?? '-' }}</td>
+                            <td class="px-4 py-2 text-sm text-gray-800">{{ $msg->pesan }}</td>
+                            <td class="px-4 py-2 text-xs text-gray-400">{{ $msg->created_at->diffForHumans() }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @else
+        <p class="text-gray-500 text-sm">Belum ada pesan masuk dari pengunjung.</p>
+    @endif
+</div>
     </section>
     @endauth
 
