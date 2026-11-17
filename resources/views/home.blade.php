@@ -36,25 +36,20 @@
                     </button>
                 </li>
 
-                @auth 
-                    <li><a href="#kelola-karya" class="text-purple-600 dark:text-purple-400 font-bold transition">Admin</a></li>
-                @endauth
-
-                @guest
-                    <li>
-                        <a href="/login" class="bg-purple-400 text-white px-3 py-1 rounded-full text-[10px] font-bold hover:bg-purple-500 transition shadow-sm">
-                            Login
-                        </a>
-                    </li>
-                @endguest
-
                 @auth
+                    <li><a href="#kelola-karya" class="text-purple-600 dark:text-purple-400 font-bold transition">Admin</a></li>
                     <li class="border-l border-purple-200 dark:border-slate-700 pl-2 flex items-center gap-2">
                         <span class="text-[8px] bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 font-bold px-1.5 py-0.5 rounded-full">Admin</span>
                         <form action="{{ route('logout') }}" method="POST" class="inline">
                             @csrf
                             <button type="submit" class="text-red-500 text-[10px] font-bold hover:underline">Logout</button>
                         </form>
+                    </li>
+                @else
+                    <li>
+                        <a href="/login" class="bg-purple-400 text-white px-3 py-1 rounded-full text-[10px] font-bold hover:bg-purple-500 transition shadow-sm">
+                            Login
+                        </a>
                     </li>
                 @endauth
             </ul>
@@ -199,66 +194,68 @@
 
             <!-- GRID PROJEK -->
             <div id="projectGrid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                @forelse($projects as $project)
-                    <div class="project-card bg-purple-50/30 dark:bg-slate-800 rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-purple-100 dark:border-slate-700 flex flex-col justify-between" data-category="{{ strtolower($project->kategori ?? 'ui/ux') }}" data-title="{{ strtolower($project->judul ?? $project->nama_project) }}">
-                        <div class="cursor-pointer" onclick="openDetailModal(
-                            '{{ addslashes($project->judul ?? $project->nama_project) }}', 
-                            '{{ $project->kategori ?? 'UI/UX Design' }}', 
-                            '{{ asset('img/projects/' . $project->gambar) }}', 
-                            '{{ addslashes($project->deskripsi) }}',
-                            '{{ addslashes($project->permasalahan ?? 'Tidak ada data') }}',
-                            '{{ addslashes($project->tujuan ?? 'Tidak ada data') }}',
-                            '{{ addslashes($project->teknologi ?? 'Figma') }}',
-                            '{{ addslashes($project->peran ?? 'UI/UX Designer (Tim Kolaborasi)') }}',
-                            '{{ $project->link_demo ?? '' }}',
-                            '{{ $project->link_github ?? '' }}'
-                        )">
-                            <div class="h-60 overflow-hidden bg-purple-100 dark:bg-slate-700">
-                                <img src="{{ asset('img/projects/' . $project->gambar) }}" alt="Project" class="w-full h-full object-cover hover:scale-105 transition duration-500">
-                            </div>
-                            <div class="p-6">
-                                <span class="text-[10px] font-bold bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 px-3 py-1 rounded-full uppercase tracking-wider">{{ $project->kategori ?? 'UI/UX' }}</span>
-                                <h3 class="text-xl font-bold mt-2 mb-2 hover:text-purple-500 transition">{{ $project->judul ?? $project->nama_project }}</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-300 leading-relaxed font-light mb-4 line-clamp-2">{{ $project->deskripsi }}</p>
-                                <span class="text-xs font-bold text-purple-500 hover:underline">Lihat Detail Lengkap →</span>
-                            </div>
-                        </div>
-                        
-                        <div class="px-6 pb-6 pt-2">
-                            @auth
-                                <div class="flex gap-2 border-t border-purple-100 dark:border-slate-700 pt-4">
-                                    <button type="button" 
-                                            onclick="focusAndEdit(
-                                                '{{ $project->id }}', 
-                                                '{{ addslashes($project->judul ?? $project->nama_project) }}', 
-                                                '{{ addslashes($project->kategori ?? '') }}', 
-                                                '{{ addslashes($project->deskripsi) }}',
-                                                '{{ addslashes($project->permasalahan ?? '') }}',
-                                                '{{ addslashes($project->tujuan ?? '') }}',
-                                                '{{ addslashes($project->teknologi ?? '') }}',
-                                                '{{ addslashes($project->peran ?? '') }}',
-                                                '{{ addslashes($project->link_demo ?? '') }}',
-                                                '{{ addslashes($project->link_github ?? '') }}'
-                                            )" 
-                                            class="text-xs font-bold text-purple-600 bg-purple-50 hover:bg-purple-100 dark:bg-slate-700 dark:text-purple-300 px-4 py-2 rounded-xl transition">
-                                        Edit Karya
-                                    </button>
-                                    <form action="{{ route('projects.delete', $project->id) }}" method="POST" onsubmit="return confirm('Hapus project ini?')" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-950 dark:text-red-300 px-4 py-2 rounded-xl transition">
-                                            Hapus
-                                        </button>
-                                    </form>
+                @isset($projects)
+                    @forelse($projects as $project)
+                        <div class="project-card bg-purple-50/30 dark:bg-slate-800 rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-purple-100 dark:border-slate-700 flex flex-col justify-between" data-category="{{ strtolower($project->kategori ?? 'ui/ux') }}" data-title="{{ strtolower($project->judul ?? $project->nama_project) }}">
+                            <div class="cursor-pointer" onclick="openDetailModal(
+                                '{{ addslashes($project->judul ?? $project->nama_project) }}', 
+                                '{{ $project->kategori ?? 'UI/UX Design' }}', 
+                                '{{ asset('img/projects/' . $project->gambar) }}', 
+                                '{{ addslashes($project->deskripsi) }}',
+                                '{{ addslashes($project->permasalahan ?? 'Tidak ada data') }}',
+                                '{{ addslashes($project->tujuan ?? 'Tidak ada data') }}',
+                                '{{ addslashes($project->teknologi ?? 'Figma') }}',
+                                '{{ addslashes($project->peran ?? 'UI/UX Designer (Tim Kolaborasi)') }}',
+                                '{{ $project->link_demo ?? '' }}',
+                                '{{ $project->link_github ?? '' }}'
+                            )">
+                                <div class="h-60 overflow-hidden bg-purple-100 dark:bg-slate-700">
+                                    <img src="{{ asset('img/projects/' . $project->gambar) }}" alt="Project" class="w-full h-full object-cover hover:scale-105 transition duration-500">
                                 </div>
-                            @endauth
+                                <div class="p-6">
+                                    <span class="text-[10px] font-bold bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 px-3 py-1 rounded-full uppercase tracking-wider">{{ $project->kategori ?? 'UI/UX' }}</span>
+                                    <h3 class="text-xl font-bold mt-2 mb-2 hover:text-purple-500 transition">{{ $project->judul ?? $project->nama_project }}</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-300 leading-relaxed font-light mb-4 line-clamp-2">{{ $project->deskripsi }}</p>
+                                    <span class="text-xs font-bold text-purple-500 hover:underline">Lihat Detail Lengkap →</span>
+                                </div>
+                            </div>
+                            
+                            <div class="px-6 pb-6 pt-2">
+                                @auth
+                                    <div class="flex gap-2 border-t border-purple-100 dark:border-slate-700 pt-4">
+                                        <button type="button" 
+                                                onclick="focusAndEdit(
+                                                    '{{ $project->id }}', 
+                                                    '{{ addslashes($project->judul ?? $project->nama_project) }}', 
+                                                    '{{ addslashes($project->kategori ?? '') }}', 
+                                                    '{{ addslashes($project->deskripsi) }}',
+                                                    '{{ addslashes($project->permasalahan ?? '') }}',
+                                                    '{{ addslashes($project->tujuan ?? '') }}',
+                                                    '{{ addslashes($project->teknologi ?? '') }}',
+                                                    '{{ addslashes($project->peran ?? '') }}',
+                                                    '{{ addslashes($project->link_demo ?? '') }}',
+                                                    '{{ addslashes($project->link_github ?? '') }}'
+                                                )" 
+                                                class="text-xs font-bold text-purple-600 bg-purple-50 hover:bg-purple-100 dark:bg-slate-700 dark:text-purple-300 px-4 py-2 rounded-xl transition">
+                                            Edit Karya
+                                        </button>
+                                        <form action="{{ route('projects.delete', $project->id) }}" method="POST" onsubmit="return confirm('Hapus project ini?')" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-950 dark:text-red-300 px-4 py-2 rounded-xl transition">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                @endauth
+                            </div>
                         </div>
-                    </div>
-                @empty
-                    <div class="col-span-2 text-center py-12 text-purple-400 italic bg-purple-50/20 dark:bg-slate-800 rounded-[2.5rem] border border-purple-100 dark:border-slate-700">
-                        Belum ada karya project yang ditambahkan di database.
-                    </div>
-                @endforelse
+                    @empty
+                        <div class="col-span-2 text-center py-12 text-purple-400 italic bg-purple-50/20 dark:bg-slate-800 rounded-[2.5rem] border border-purple-100 dark:border-slate-700">
+                            Belum ada karya project yang ditambahkan di database.
+                        </div>
+                    @endforelse
+                @endisset
             </div>
         </div>
     </section>
@@ -272,36 +269,38 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                @forelse($certificates as $cert)
-                    <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] p-6 shadow-sm border border-purple-100 dark:border-slate-700 flex flex-col justify-between">
-                        <div>
-                            @if($cert->gambar)
-                                <div class="h-48 rounded-2xl overflow-hidden bg-purple-100 dark:bg-slate-700 mb-4 cursor-pointer" onclick="openCertModal('{{ asset('img/certificates/' . $cert->gambar) }}', '{{ addslashes($cert->nama_sertifikat) }}')">
-                                    <img src="{{ asset('img/certificates/' . $cert->gambar) }}" alt="{{ $cert->nama_sertifikat }}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
-                                </div>
-                            @endif
-                            <span class="text-[10px] font-bold bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 px-3 py-1 rounded-full uppercase tracking-wider">{{ $cert->tahun ?? '2026' }}</span>
-                            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-3 mb-1">{{ $cert->nama_sertifikat }}</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">{{ $cert->pemberi }}</p>
-                        </div>
-
-                        @auth
-                            <div class="mt-6 pt-4 border-t border-purple-100 dark:border-slate-700 flex justify-end">
-                                <form action="{{ route('certificates.delete', $cert->id) }}" method="POST" onsubmit="return confirm('Hapus sertifikat ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-950 dark:text-red-300 px-3 py-1.5 rounded-xl transition">
-                                        Hapus Sertifikat
-                                    </button>
-                                </form>
+                @isset($certificates)
+                    @forelse($certificates as $cert)
+                        <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] p-6 shadow-sm border border-purple-100 dark:border-slate-700 flex flex-col justify-between">
+                            <div>
+                                @if($cert->gambar)
+                                    <div class="h-48 rounded-2xl overflow-hidden bg-purple-100 dark:bg-slate-700 mb-4 cursor-pointer" onclick="openCertModal('{{ asset('img/certificates/' . $cert->gambar) }}', '{{ addslashes($cert->nama_sertifikat) }}')">
+                                        <img src="{{ asset('img/certificates/' . $cert->gambar) }}" alt="{{ $cert->nama_sertifikat }}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                                    </div>
+                                @endif
+                                <span class="text-[10px] font-bold bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 px-3 py-1 rounded-full uppercase tracking-wider">{{ $cert->tahun ?? '2026' }}</span>
+                                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mt-3 mb-1">{{ $cert->nama_sertifikat }}</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">{{ $cert->pemberi }}</p>
                             </div>
-                        @endauth
-                    </div>
-                @empty
-                    <div class="col-span-3 text-center py-12 text-purple-400 italic bg-purple-50/20 dark:bg-slate-800 rounded-[2.5rem] border border-purple-100 dark:border-slate-700">
-                        Belum ada sertifikat atau prestasi yang ditambahkan.
-                    </div>
-                @endforelse
+
+                            @auth
+                                <div class="mt-6 pt-4 border-t border-purple-100 dark:border-slate-700 flex justify-end">
+                                    <form action="{{ route('certificates.delete', $cert->id) }}" method="POST" onsubmit="return confirm('Hapus sertifikat ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-950 dark:text-red-300 px-3 py-1.5 rounded-xl transition">
+                                            Hapus Sertifikat
+                                        </button>
+                                    </form>
+                                </div>
+                            @endauth
+                        </div>
+                    @empty
+                        <div class="col-span-3 text-center py-12 text-purple-400 italic bg-purple-50/20 dark:bg-slate-800 rounded-[2.5rem] border border-purple-100 dark:border-slate-700">
+                            Belum ada sertifikat atau prestasi yang ditambahkan.
+                        </div>
+                    @endforelse
+                @endisset
             </div>
         </div>
     </section>
@@ -409,31 +408,33 @@
                 </div>
 
                 <!-- Testimoni Dinamis dari Database -->
-                @if(isset($testimonis) && $testimonis->count() > 0)
-                    @foreach($testimonis as $testi)
-                        <div class="bg-purple-50/40 dark:bg-slate-800 p-8 rounded-[2.5rem] border border-purple-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
-                            <div>
-                                <div class="text-purple-400 text-2xl mb-4"><i class="fa-solid fa-quote-left"></i></div>
-                                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-light mb-6">
-                                    "{{ $testi->pesan ?? $testi->testimonial ?? $testi->content }}"
-                                </p>
-                            </div>
-                            <div class="flex items-center gap-3 pt-4 border-t border-purple-100 dark:border-slate-700">
-                                <div class="w-10 h-10 rounded-full bg-purple-200 dark:bg-purple-900 flex items-center justify-center font-bold text-purple-700 dark:text-purple-300 text-xs uppercase">
-                                    {{ substr($testi->nama ?? $testi->name ?? 'P', 0, 2) }}
-                                </div>
+                @isset($testimonis)
+                    @if($testimonis->count() > 0)
+                        @foreach($testimonis as $testi)
+                            <div class="bg-purple-50/40 dark:bg-slate-800 p-8 rounded-[2.5rem] border border-purple-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
                                 <div>
-                                    <h4 class="font-bold text-xs text-slate-800 dark:text-slate-100">
-                                        {{ $testi->nama ?? $testi->name ?? 'Pengunjung' }}
-                                    </h4>
-                                    <p class="text-[10px] text-purple-500 font-medium">
-                                        {{ $testi->created_at ? $testi->created_at->diffForHumans() : 'Baru saja' }}
+                                    <div class="text-purple-400 text-2xl mb-4"><i class="fa-solid fa-quote-left"></i></div>
+                                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-light mb-6">
+                                        "{{ $testi->pesan ?? $testi->testimonial ?? $testi->content }}"
                                     </p>
                                 </div>
+                                <div class="flex items-center gap-3 pt-4 border-t border-purple-100 dark:border-slate-700">
+                                    <div class="w-10 h-10 rounded-full bg-purple-200 dark:bg-purple-900 flex items-center justify-center font-bold text-purple-700 dark:text-purple-300 text-xs uppercase">
+                                        {{ substr($testi->nama ?? $testi->name ?? 'P', 0, 2) }}
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-xs text-slate-800 dark:text-slate-100">
+                                            {{ $testi->nama ?? $testi->name ?? 'Pengunjung' }}
+                                        </h4>
+                                        <p class="text-[10px] text-purple-500 font-medium">
+                                            {{ $testi->created_at ? $testi->created_at->diffForHumans() : 'Baru saja' }}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    @endforeach
-                @endif
+                        @endforeach
+                    @endif
+                @endisset
             </div>
 
             <!-- Form Tambah Testimoni untuk Pengunjung -->
@@ -627,32 +628,34 @@
                     <span class="w-2 h-2 rounded-full bg-purple-600"></span>
                     Kotak Masuk Pesan Pengunjung ({{ isset($messages) ? $messages->count() : 0 }})
                 </h3>
-                @if(isset($messages) && $messages->count() > 0)
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-slate-700 text-xs">
-                            <thead class="bg-gray-50 dark:bg-slate-900 text-gray-500 font-semibold">
-                                <tr>
-                                    <th class="px-4 py-3 text-left">Nama</th>
-                                    <th class="px-4 py-3 text-left">Email</th>
-                                    <th class="px-4 py-3 text-left">Pesan</th>
-                                    <th class="px-4 py-3 text-right">Waktu</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-800">
-                                @foreach($messages as $msg)
-                                    <tr class="hover:bg-purple-50/30 transition-colors">
-                                        <td class="px-4 py-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">{{ $msg->nama_pengirim }}</td>
-                                        <td class="px-4 py-3 text-slate-500 whitespace-nowrap">{{ $msg->email ?? '-' }}</td>
-                                        <td class="px-4 py-3 text-slate-600 dark:text-slate-300 max-w-xs truncate">{{ $msg->pesan }}</td>
-                                        <td class="px-4 py-3 text-right text-slate-400 whitespace-nowrap">{{ $msg->created_at->diffForHumans() }}</td>
+                @isset($messages)
+                    @if($messages->count() > 0)
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-slate-700 text-xs">
+                                <thead class="bg-gray-50 dark:bg-slate-900 text-gray-500 font-semibold">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left">Nama</th>
+                                        <th class="px-4 py-3 text-left">Email</th>
+                                        <th class="px-4 py-3 text-left">Pesan</th>
+                                        <th class="px-4 py-3 text-right">Waktu</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <p class="text-slate-400 text-xs text-center py-4">Belum ada pesan masuk.</p>
-                @endif
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-800">
+                                    @foreach($messages as $msg)
+                                        <tr class="hover:bg-purple-50/30 transition-colors">
+                                            <td class="px-4 py-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">{{ $msg->nama_pengirim }}</td>
+                                            <td class="px-4 py-3 text-slate-500 whitespace-nowrap">{{ $msg->email ?? '-' }}</td>
+                                            <td class="px-4 py-3 text-slate-600 dark:text-slate-300 max-w-xs truncate">{{ $msg->pesan }}</td>
+                                            <td class="px-4 py-3 text-right text-slate-400 whitespace-nowrap">{{ $msg->created_at->diffForHumans() }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <p class="text-slate-400 text-xs text-center py-4">Belum ada pesan masuk.</p>
+                    @endif
+                @endisset
             </div>
 
             <!-- 4. Kelola Testimoni Pengunjung (Admin dengan Tombol Hapus) -->
@@ -661,36 +664,38 @@
                     <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
                     Kelola Testimoni ({{ isset($testimonis) ? $testimonis->count() : 0 }})
                 </h3>
-                @if(isset($testimonis) && $testimonis->count() > 0)
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-slate-700 text-xs">
-                            <thead class="bg-gray-50 dark:bg-slate-900 text-gray-500 font-semibold">
-                                <tr>
-                                    <th class="px-4 py-3 text-left">Pengirim</th>
-                                    <th class="px-4 py-3 text-left">Isi Testimoni</th>
-                                    <th class="px-4 py-3 text-right">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-800">
-                                @foreach($testimonis as $testi)
-                                    <tr class="hover:bg-indigo-50/30 transition-colors">
-                                        <td class="px-4 py-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">{{ $testi->nama ?? $testi->name ?? 'Tanpa Nama' }}</td>
-                                        <td class="px-4 py-3 text-slate-600 dark:text-slate-300 max-w-md">"{{ $testi->pesan ?? $testi->testimonial ?? $testi->content }}"</td>
-                                        <td class="px-4 py-3 text-right whitespace-nowrap">
-                                            <form action="{{ route('testimonial.delete', $testi->id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus testimoni ini?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="px-2.5 py-1 bg-red-50 text-red-600 hover:bg-red-100 font-bold rounded-lg transition">Hapus</button>
-                                            </form>
-                                        </td>
+                @isset($testimonis)
+                    @if($testimonis->count() > 0)
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-slate-700 text-xs">
+                                <thead class="bg-gray-50 dark:bg-slate-900 text-gray-500 font-semibold">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left">Pengirim</th>
+                                        <th class="px-4 py-3 text-left">Isi Testimoni</th>
+                                        <th class="px-4 py-3 text-right">Aksi</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <p class="text-slate-400 text-xs text-center py-4">Belum ada testimoni masuk.</p>
-                @endif
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-800">
+                                    @foreach($testimonis as $testi)
+                                        <tr class="hover:bg-indigo-50/30 transition-colors">
+                                            <td class="px-4 py-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">{{ $testi->nama ?? $testi->name ?? 'Tanpa Nama' }}</td>
+                                            <td class="px-4 py-3 text-slate-600 dark:text-slate-300 max-w-md">"{{ $testi->pesan ?? $testi->testimonial ?? $testi->content }}"</td>
+                                            <td class="px-4 py-3 text-right whitespace-nowrap">
+                                                <form action="{{ route('testimonial.delete', $testi->id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus testimoni ini?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="px-2.5 py-1 bg-red-50 text-red-600 hover:bg-red-100 font-bold rounded-lg transition">Hapus</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <p class="text-slate-400 text-xs text-center py-4">Belum ada testimoni masuk.</p>
+                    @endif
+                @endisset
             </div>
 
         </div>
