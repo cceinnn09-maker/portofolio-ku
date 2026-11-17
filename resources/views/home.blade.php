@@ -509,7 +509,7 @@
     </section>
 
     <!-- ======================================================== -->
-    <!-- PANEL KHUSUS ADMIN (Hanya Muncul Saat Login / @auth)      -->
+    <!-- PANEL KHUSUS ADMIN (Hanya Muncul Saat Admin Login)       -->
     <!-- ======================================================== -->
     @auth
     <section id="kelola-karya" class="py-28 border-t border-purple-200 dark:border-slate-700 bg-purple-50/50 dark:bg-slate-900">
