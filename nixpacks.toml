@@ -7,5 +7,6 @@ cmds = [
 ]
 
 [start]
-# Pastikan tabel sessions/cache selalu ada sebelum server melayani request.
-cmd = "php artisan migrate --force && php -S 0.0.0.0:$PORT -t public"
+# Bersihkan cache konfigurasi & pastikan tabel sessions/cache ada
+# sebelum server PHP melayani request.
+cmd = "php artisan config:clear && php artisan migrate --force && php -S 0.0.0.0:$PORT -t public"
