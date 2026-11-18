@@ -37,8 +37,7 @@ class AdminController extends Controller
 
     // SIMPAN PESAN DARI PENGUNJUNG
     public function storeMessage(Request $request)
-    {
-        $request->validate([
+    {        $request->validate([
             'nama_pengirim' => 'required|string|max:255',
             'pesan' => 'required|string',
         ]);
@@ -53,6 +52,16 @@ class AdminController extends Controller
             ->with('success', 'Pesan berhasil dikirim!');
     }
 
+    // HAPUS PESAN MASUK (ADMIN)
+    public function destroyMessage($id)
+    {
+        $message = Message::findOrFail($id);
+        $message->delete();
+
+        return redirect('/#kelola-karya')
+            ->with('success', 'Pesan berhasil dihapus!');
+    }
+
     // CRUD TESTIMONI
     public function storeTestimonial(Request $request)
     {
@@ -63,7 +72,7 @@ class AdminController extends Controller
 
         Testimonial::create([
             'nama' => $request->nama,
-            'profesi' => 'Pengunjung',
+            'profesi' => $request->input('profesi', 'Pengunjung'),
             'pesan' => $request->pesan,
         ]);
 
@@ -98,8 +107,11 @@ class AdminController extends Controller
         $project->tujuan = $request->tujuan;
         $project->teknologi = $request->teknologi;
         $project->peran = $request->peran;
+        $project->fitur_fitur = $request->fitur_fitur;
         $project->link_demo = $request->link_demo;
         $project->link_github = $request->link_github;
+        $project->dokumentasi = $request->dokumentasi;
+        $project->feedback_user = $request->feedback_user;
 
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
@@ -132,8 +144,11 @@ class AdminController extends Controller
         $project->tujuan = $request->tujuan;
         $project->teknologi = $request->teknologi;
         $project->peran = $request->peran;
+        $project->fitur_fitur = $request->fitur_fitur;
         $project->link_demo = $request->link_demo;
         $project->link_github = $request->link_github;
+        $project->dokumentasi = $request->dokumentasi;
+        $project->feedback_user = $request->feedback_user;
 
         if ($request->hasFile('gambar')) {
             if (

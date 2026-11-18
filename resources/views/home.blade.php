@@ -12,13 +12,53 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* ANIMASI GANTI HALAMAN (fade saat masuk & keluar halaman) */
+        body {
+            opacity: 0;
+            animation: pageFadeIn 0.6s ease forwards;
+        }
+        body.page-leaving {
+            animation: pageFadeOut 0.35s ease forwards;
+        }
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pageFadeOut {
+            from { opacity: 1; }
+            to   { opacity: 0; transform: translateY(-10px); }
+        }
+
+        /* ANIMASI REVEAL SAAT SCROLL */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ANIMASI TOAST NOTIFIKASI */
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fixed.bottom-5.right-5 {
+            animation: toastIn 0.4s ease;
+        }
+    </style>
 </head>
 <body class="bg-purple-50/30 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-[Poppins] transition-colors duration-300">
 
     <!-- NAVBAR -->
     <header class="fixed top-0 left-0 w-full z-50 flex justify-center py-4 px-4">
-        <nav>
-            <ul class="flex items-center gap-4 bg-white/80 dark:bg-slate-800/85 backdrop-blur-md px-5 py-3 rounded-full shadow-md border border-purple-100 dark:border-slate-700 text-[11px]">
+        <nav class="w-full max-w-6xl relative">
+            <!-- Tampilan Desktop -->
+            <ul class="hidden md:flex items-center justify-center gap-4 bg-white/80 dark:bg-slate-800/85 backdrop-blur-md px-5 py-3 rounded-full shadow-md border border-purple-100 dark:border-slate-700 text-[11px]">
                 <li><a href="#beranda" class="hover:text-purple-500 font-medium transition">Beranda</a></li>
                 <li><a href="#tentang" class="hover:text-purple-500 font-medium transition">Tentang</a></li>
                 <li><a href="#skills" class="hover:text-purple-500 font-medium transition">Skills</a></li>
@@ -32,7 +72,7 @@
                 <!-- Tombol Dark/Light Mode -->
                 <li>
                     <button onclick="toggleDarkMode()" class="w-6 h-6 rounded-full bg-purple-100 dark:bg-slate-700 flex items-center justify-center text-purple-600 dark:text-yellow-400 transition" title="Ganti Tema">
-                        <i id="theme-icon" class="fa-solid fa-moon text-[9px]"></i>
+                        <i id="theme-icon" class="theme-icon fa-solid fa-moon text-[9px]"></i>
                     </button>
                 </li>
 
@@ -53,6 +93,47 @@
                     </li>
                 @endauth
             </ul>
+
+            <!-- Tampilan Mobile -->
+            <div class="md:hidden flex items-center justify-between bg-white/80 dark:bg-slate-800/85 backdrop-blur-md px-5 py-3 rounded-full shadow-md border border-purple-100 dark:border-slate-700">
+                <a href="#beranda" class="text-xs font-bold text-purple-600 dark:text-purple-300">Nurhaina ✦</a>
+                <button onclick="toggleMobileMenu()" class="w-8 h-8 rounded-full bg-purple-100 dark:bg-slate-700 flex items-center justify-center text-purple-600 dark:text-purple-300 transition" title="Menu">
+                    <i id="menu-icon" class="fa-solid fa-bars text-xs"></i>
+                </button>
+            </div>
+
+            <!-- Menu Dropdown Mobile -->
+            <div id="mobile-menu" class="md:hidden hidden mt-2 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-purple-100 dark:border-slate-700 p-4">
+                <ul class="flex flex-col text-xs font-medium divide-y divide-purple-50 dark:divide-slate-700">
+                    <li><a href="#beranda" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Beranda</a></li>
+                    <li><a href="#tentang" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Tentang</a></li>
+                    <li><a href="#skills" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Skills</a></li>
+                    <li><a href="#project" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Project</a></li>
+                    <li><a href="#sertifikat" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Sertifikat</a></li>
+                    <li><a href="#pengalaman" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Pengalaman</a></li>
+                    <li><a href="#blog" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Blog</a></li>
+                    <li><a href="#testimoni" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Testimoni</a></li>
+                    <li><a href="#kontak" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Kontak</a></li>
+                </ul>
+                <div class="flex items-center justify-between pt-3 mt-2 border-t border-purple-50 dark:border-slate-700">
+                    <button onclick="toggleDarkMode(); toggleMobileMenu();" class="w-8 h-8 rounded-full bg-purple-100 dark:bg-slate-700 flex items-center justify-center text-purple-600 dark:text-yellow-400 transition" title="Ganti Tema">
+                        <i class="theme-icon fa-solid fa-moon text-[10px]"></i>
+                    </button>
+                    @auth
+                        <div class="flex items-center gap-3">
+                            <span class="text-[9px] bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 font-bold px-2 py-1 rounded-full">Mode Admin</span>
+                            <form action="{{ route('logout') }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="text-red-500 text-[10px] font-bold hover:underline">Logout</button>
+                            </form>
+                        </div>
+                    @else
+                        <a href="/login" class="bg-purple-400 text-white px-4 py-1.5 rounded-full text-[10px] font-bold hover:bg-purple-500 transition shadow-sm">
+                            Login
+                        </a>
+                    @endauth
+                </div>
+            </div>
         </nav>
     </header>
 
@@ -77,7 +158,7 @@
                 
                 <div class="flex flex-wrap gap-3 justify-center md:justify-start pt-2">
                     <a href="#project" class="bg-purple-500 text-white px-6 py-3 rounded-2xl text-sm font-medium shadow-md hover:bg-purple-600 transition">Lihat Portofolio</a>
-                    
+
                     @if(isset($profile->file_cv) && $profile->file_cv)
                         <a href="{{ asset('files/' . $profile->file_cv) }}" download class="bg-purple-100 dark:bg-slate-700 text-purple-700 dark:text-purple-300 px-6 py-3 rounded-2xl text-sm font-medium hover:bg-purple-200 transition flex items-center gap-2">
                             <i class="fa-solid fa-download"></i> Download CV
@@ -85,6 +166,10 @@
                     @else
                         <a href="#tentang" class="bg-purple-100 dark:bg-slate-700 text-purple-700 dark:text-purple-300 px-6 py-3 rounded-2xl text-sm font-medium hover:bg-purple-200 transition">Tentang Saya</a>
                     @endif
+
+                    <a href="#kontak" class="bg-white dark:bg-slate-800 border border-purple-200 dark:border-slate-700 text-purple-600 dark:text-purple-300 px-6 py-3 rounded-2xl text-sm font-medium shadow-sm hover:bg-purple-50 dark:hover:bg-slate-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-envelope text-xs"></i> Hubungi Saya
+                    </a>
                 </div>
             </div>
             <div class="w-56 h-56 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-purple-200 dark:border-purple-900 shadow-lg flex-shrink-0">
@@ -103,15 +188,38 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
                 <div class="bg-purple-50/50 dark:bg-slate-800 p-6 rounded-3xl border border-purple-100 dark:border-slate-700">
+                    <h3 class="font-bold text-purple-600 dark:text-purple-400 mb-2"><i class="fa-solid fa-id-card mr-2"></i> Biodata Singkat</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                        <strong>Nurhaina</strong> — Siswi SMK Negeri 2 Banjarmasin, jurusan PPLG.
+                        Berdomisili di Banjarmasin, Kalimantan Selatan. Suka desain estetik,
+                        detail, dan dunia antarmuka digital.
+                    </p>
+                </div>
+                <div class="bg-purple-50/50 dark:bg-slate-800 p-6 rounded-3xl border border-purple-100 dark:border-slate-700">
                     <h3 class="font-bold text-purple-600 dark:text-purple-400 mb-2"><i class="fa-solid fa-graduation-cap mr-2"></i> Pendidikan</h3>
                     <p class="text-xs text-slate-500 dark:text-slate-400">SMK Negeri 2 Banjarmasin<br>Jurusan PPLG (Software Engineering & Game Dev)</p>
+                </div>
+                <div class="bg-purple-50/50 dark:bg-slate-800 p-6 rounded-3xl border border-purple-100 dark:border-slate-700">
+                    <h3 class="font-bold text-purple-600 dark:text-purple-400 mb-2"><i class="fa-solid fa-heart mr-2"></i> Minat & Teknologi Dikuasai</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                        Tertarik pada <strong>UI/UX Design & Product Design</strong>.
+                        Teknologi yang dikuasai: <strong>Figma</strong>, HTML, CSS,
+                        Bootstrap, dasar Laravel, dan MySQL.
+                    </p>
+                </div>
+                <div class="bg-purple-50/50 dark:bg-slate-800 p-6 rounded-3xl border border-purple-100 dark:border-slate-700">
+                    <h3 class="font-bold text-purple-600 dark:text-purple-400 mb-2"><i class="fa-solid fa-users mr-2"></i> Organisasi / Kepanitiaan</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                        Aktif sebagai anggota kepanitiaan acara sekolah dan anggota tim
+                        proyek PPLG, berperan merancang dokumentasi serta antarmuka aplikasi.
+                    </p>
                 </div>
                 <div class="bg-purple-50/50 dark:bg-slate-800 p-6 rounded-3xl border border-purple-100 dark:border-slate-700">
                     <h3 class="font-bold text-purple-600 dark:text-purple-400 mb-2"><i class="fa-solid fa-bullseye mr-2"></i> Keahlian Utama</h3>
                     <p class="text-xs text-slate-500 dark:text-slate-400">UI/UX Wireframing & Design, User Research, dan Perancangan Layout Antarmuka.</p>
                 </div>
                 <div class="bg-purple-50/50 dark:bg-slate-800 p-6 rounded-3xl border border-purple-100 dark:border-slate-700">
-                    <h3 class="font-bold text-purple-600 dark:text-purple-400 mb-2"><i class="fa-solid fa-rocket mr-2"></i> Tujuan Karir</h3>
+                    <h3 class="font-bold text-purple-600 dark:text-purple-400 mb-2"><i class="fa-solid fa-rocket mr-2"></i> Cita-Cita / Tujuan Karir</h3>
                     <p class="text-xs text-slate-500 dark:text-slate-400">Menjadi UI/UX Designer profesional yang menghadirkan pengalaman pengguna yang intuitif dan menarik.</p>
                 </div>
             </div>
@@ -206,8 +314,11 @@
                                 '{{ addslashes($project->tujuan ?? 'Tidak ada data') }}',
                                 '{{ addslashes($project->teknologi ?? 'Figma') }}',
                                 '{{ addslashes($project->peran ?? 'UI/UX Designer (Tim Kolaborasi)') }}',
-                                '{{ $project->link_demo ?? '' }}',
-                                '{{ $project->link_github ?? '' }}'
+                                '{{ addslashes($project->link_demo ?? '') }}',
+                                '{{ $project->link_github ?? '' }}',
+                                '{{ addslashes($project->fitur_fitur ?? '') }}',
+                                '{{ addslashes($project->dokumentasi ?? '') }}',
+                                '{{ addslashes($project->feedback_user ?? '') }}'
                             )">
                                 <div class="h-60 overflow-hidden bg-purple-100 dark:bg-slate-700">
                                     <img src="{{ asset('img/projects/' . $project->gambar) }}" alt="Project" class="w-full h-full object-cover hover:scale-105 transition duration-500">
@@ -234,7 +345,10 @@
                                                     '{{ addslashes($project->teknologi ?? '') }}',
                                                     '{{ addslashes($project->peran ?? '') }}',
                                                     '{{ addslashes($project->link_demo ?? '') }}',
-                                                    '{{ addslashes($project->link_github ?? '') }}'
+                                                    '{{ addslashes($project->link_github ?? '') }}',
+                                                    '{{ addslashes($project->fitur_fitur ?? '') }}',
+                                                    '{{ addslashes($project->dokumentasi ?? '') }}',
+                                                    '{{ addslashes($project->feedback_user ?? '') }}'
                                                 )" 
                                                 class="text-xs font-bold text-purple-600 bg-purple-50 hover:bg-purple-100 dark:bg-slate-700 dark:text-purple-300 px-4 py-2 rounded-xl transition">
                                             Edit Karya
@@ -334,6 +448,28 @@
                         <p class="text-xs text-slate-500 dark:text-slate-400">Berperan sebagai <strong>UI/UX Designer</strong> dalam tim kelompok untuk merancang tata letak antarmuka aplikasi, wireframe, serta alur pengalaman pengguna secara kolaboratif.</p>
                     </div>
                 </div>
+
+                <div class="bg-purple-50/40 dark:bg-slate-800 p-6 rounded-3xl border border-purple-100 dark:border-slate-700 shadow-sm flex items-start gap-4">
+                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-2xl flex items-center justify-center text-xl flex-shrink-0">
+                        <i class="fa-solid fa-people-group"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base">Pengalaman Organisasi / Kepanitiaan</h3>
+                        <p class="text-xs text-purple-500 font-medium mb-1">Anggota Kepanitiaan Acara Sekolah</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Terlibat dalam kepanitiaan kegiatan sekolah sebagai anggota divisi dokumentasi dan desain, belajar tanggung jawab, koordinasi tim, serta manajemen waktu.</p>
+                    </div>
+                </div>
+
+                <div class="bg-purple-50/40 dark:bg-slate-800 p-6 rounded-3xl border border-purple-100 dark:border-slate-700 shadow-sm flex items-start gap-4">
+                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-2xl flex items-center justify-center text-xl flex-shrink-0">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base">Pengalaman Mengikuti Lomba</h3>
+                        <p class="text-xs text-purple-500 font-medium mb-1">Lomba Kompetensi Desain Aplikasi</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Mengikuti lomba di bidang desain UI/UX dan pengembangan aplikasi tingkat pelajar, melatih kesiapan menyajikan karya serta berlatih menghadapi penilaian juri secara profesional.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -393,7 +529,8 @@
                 <!-- Testimoni Statis Bawaan -->
                 <div class="bg-purple-50/40 dark:bg-slate-800 p-8 rounded-[2.5rem] border border-purple-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
                     <div>
-                        <div class="text-purple-400 text-2xl mb-4"><i class="fa-solid fa-quote-left"></i></div>
+                        <span class="text-[10px] font-bold bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 px-3 py-1 rounded-full uppercase tracking-wider">Guru Pembimbing</span>
+                        <div class="text-purple-400 text-2xl mt-4 mb-4"><i class="fa-solid fa-quote-left"></i></div>
                         <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-light mb-6">
                             "Nurhaina menunjukkan dedikasi yang sangat baik dalam spesialisasi desain UI/UX. Kreatif, teliti, dan hasil rancangannya sangat membantu pengembangan aplikasi tim."
                         </p>
@@ -407,12 +544,51 @@
                     </div>
                 </div>
 
+                <!-- Testimoni Statis: Teman -->
+                <div class="bg-purple-50/40 dark:bg-slate-800 p-8 rounded-[2.5rem] border border-purple-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-300 px-3 py-1 rounded-full uppercase tracking-wider">Teman</span>
+                        <div class="text-purple-400 text-2xl mt-4 mb-4"><i class="fa-solid fa-quote-left"></i></div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-light mb-6">
+                            "Sebagai teman sekelompok, dia selalu konsisten dan penuh ide. Bagian desain antarmuka di proyek kelompok kami jadi jauh lebih rapi karena rancangannya."
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3 pt-4 border-t border-purple-100 dark:border-slate-700">
+                        <div class="w-10 h-10 rounded-full bg-emerald-200 dark:bg-emerald-900 flex items-center justify-center font-bold text-emerald-700 dark:text-emerald-300 text-xs">SN</div>
+                        <div>
+                            <h4 class="font-bold text-xs text-slate-800 dark:text-slate-100">Siti Nurhaliza</h4>
+                            <p class="text-[10px] text-purple-500 font-medium">Rekan Kelompok Proyek PPLG</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimoni Statis: Tempat PLK -->
+                <div class="bg-purple-50/40 dark:bg-slate-800 p-8 rounded-[2.5rem] border border-purple-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300 px-3 py-1 rounded-full uppercase tracking-wider">Tempat PLK</span>
+                        <div class="text-purple-400 text-2xl mt-4 mb-4"><i class="fa-solid fa-quote-left"></i></div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-light mb-6">
+                            "Selama praktik di sini, beliau cepat belajar, disiplin, dan sangat membantu dalam pengelolaan data administrasi serta pelayanan masyarakat."
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3 pt-4 border-t border-purple-100 dark:border-slate-700">
+                        <div class="w-10 h-10 rounded-full bg-amber-200 dark:bg-amber-900 flex items-center justify-center font-bold text-amber-700 dark:text-amber-300 text-xs">KK</div>
+                        <div>
+                            <h4 class="font-bold text-xs text-slate-800 dark:text-slate-100">Bapak Pembimbing</h4>
+                            <p class="text-[10px] text-purple-500 font-medium">Pembimbing Kantor Kelurahan</p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Testimoni Dinamis dari Database -->
                 @isset($testimonis)
                     @if($testimonis->count() > 0)
                         @foreach($testimonis as $testi)
                             <div class="bg-purple-50/40 dark:bg-slate-800 p-8 rounded-[2.5rem] border border-purple-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
                                 <div>
+                                    @if(!empty($testi->profesi))
+                                        <span class="text-[10px] font-bold bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 px-3 py-1 rounded-full uppercase tracking-wider">{{ $testi->profesi }}</span>
+                                    @endif
                                     <div class="text-purple-400 text-2xl mb-4"><i class="fa-solid fa-quote-left"></i></div>
                                     <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-light mb-6">
                                         "{{ $testi->pesan ?? $testi->testimonial ?? $testi->content }}"
@@ -447,6 +623,15 @@
                     <div>
                         <label class="block text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300">Nama Anda</label>
                         <input type="text" name="nama" required placeholder="Contoh: Budi Santoso" class="w-full bg-purple-50/40 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-2xl px-4 py-3 text-xs outline-none focus:border-purple-400 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300">Anda Memberi Ulasan Sebagai</label>
+                        <select name="profesi" class="w-full bg-purple-50/40 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-2xl px-4 py-3 text-xs outline-none focus:border-purple-400 transition cursor-pointer">
+                            <option value="Pengunjung">Pengunjung / Pengguna</option>
+                            <option value="Guru Pembimbing">Guru Pembimbing</option>
+                            <option value="Teman">Teman / Rekan Kelompok</option>
+                            <option value="Tempat PLK">Pembimbing Tempat PLK</option>
+                        </select>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300">Pesan / Ulasan</label>
@@ -493,7 +678,19 @@
 
                 <div class="space-y-6 flex flex-col justify-center h-full pt-4">
                     <p class="text-xs text-slate-500 dark:text-slate-400">Hubungi saya secara langsung melalui platform di bawah ini:</p>
-                    <div class="flex gap-4">
+                    <div class="flex flex-wrap gap-4">
+                        <a href="mailto:nurhaina.pplg@gmail.com" title="Email"
+                           class="w-14 h-14 bg-white dark:bg-slate-800 text-rose-500 rounded-2xl flex items-center justify-center text-2xl shadow-sm hover:bg-rose-500 hover:text-white transition-all duration-300 border border-purple-100 dark:border-slate-700">
+                            <i class="fa-solid fa-envelope"></i>
+                        </a>
+                        <a href="https://github.com/" target="_blank" title="GitHub"
+                           class="w-14 h-14 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-2xl flex items-center justify-center text-2xl shadow-sm hover:bg-slate-900 hover:text-white transition-all duration-300 border border-purple-100 dark:border-slate-700">
+                            <i class="fa-brands fa-github"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/" target="_blank" title="LinkedIn"
+                           class="w-14 h-14 bg-white dark:bg-slate-800 text-sky-600 rounded-2xl flex items-center justify-center text-2xl shadow-sm hover:bg-sky-600 hover:text-white transition-all duration-300 border border-purple-100 dark:border-slate-700">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
                         <a href="https://www.instagram.com/ainnaanr__" target="_blank" title="Instagram"
                            class="w-14 h-14 bg-white dark:bg-slate-800 text-purple-500 rounded-2xl flex items-center justify-center text-2xl shadow-sm hover:bg-purple-500 hover:text-white transition-all duration-300 border border-purple-100 dark:border-slate-700">
                             <i class="fa-brands fa-instagram"></i>
@@ -567,6 +764,11 @@
                         </div>
                     </div>
 
+                    <div>
+                        <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Fitur-Fitur dalam Proyek</label>
+                        <textarea id="fitur_fitur" name="fitur_fitur" rows="2" placeholder="Pisahkan dengan baris baru. Contoh:&#10;1. Login & Register&#10;2. CRUD Data Produk" class="w-full bg-purple-50/30 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-purple-400 transition resize-none"></textarea>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Link Demo (Opsional)</label>
@@ -575,6 +777,17 @@
                         <div>
                             <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Link GitHub (Opsional)</label>
                             <input type="text" id="link_github" name="link_github" placeholder="https://github.com/..." class="w-full bg-purple-50/30 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-purple-400 transition">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Dokumentasi Proses Pekerjaan</label>
+                            <textarea id="dokumentasi" name="dokumentasi" rows="2" placeholder="Ceritakan tahapan pengerjaan: riset, wireframe, coding, testing..." class="w-full bg-purple-50/30 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-purple-400 transition resize-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Feedback User</label>
+                            <textarea id="feedback_user" name="feedback_user" rows="2" placeholder="Masukan / ulasan pengguna terhadap proyek..." class="w-full bg-purple-50/30 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-purple-400 transition resize-none"></textarea>
                         </div>
                     </div>
 
@@ -622,7 +835,29 @@
                 </form>
             </div>
 
-            <!-- 3. Kotak Masuk Pesan Pengunjung (Admin) -->
+            <!-- 3. Upload CV Digital -->
+            <div class="bg-white dark:bg-slate-800 p-10 rounded-[2.5rem] shadow-xl border border-purple-100 dark:border-slate-700">
+                <h2 class="text-xl font-bold mb-1 text-center text-slate-800 dark:text-slate-100">Kelola CV Digital ✦</h2>
+                <p class="text-xs text-slate-400 text-center mb-6">
+                    @if(isset($profile->file_cv) && $profile->file_cv)
+                        CV saat ini: <span class="text-purple-500 font-semibold">{{ $profile->file_cv }}</span>
+                    @else
+                        Belum ada CV yang diunggah.
+                    @endif
+                </p>
+                <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    @csrf
+                    <div>
+                        <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">File CV (PDF, maksimal 2MB)</label>
+                        <input type="file" name="file_cv" accept="application/pdf" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-100 file:text-purple-700 hover:file:bg-purple-200 cursor-pointer" required>
+                    </div>
+                    <button type="submit" class="w-full bg-purple-500 hover:bg-purple-600 text-white text-xs font-bold py-3.5 rounded-xl transition shadow-md">
+                        Simpan CV Digital
+                    </button>
+                </form>
+            </div>
+
+            <!-- 4. Kotak Masuk Pesan Pengunjung (Admin) -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-purple-100 dark:border-slate-700 overflow-hidden p-6">
                 <h3 class="text-base font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-purple-600"></span>
@@ -637,7 +872,8 @@
                                         <th class="px-4 py-3 text-left">Nama</th>
                                         <th class="px-4 py-3 text-left">Email</th>
                                         <th class="px-4 py-3 text-left">Pesan</th>
-                                        <th class="px-4 py-3 text-right">Waktu</th>
+                                        <th class="px-4 py-3 text-left">Waktu</th>
+                                        <th class="px-4 py-3 text-right">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-800">
@@ -646,7 +882,14 @@
                                             <td class="px-4 py-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">{{ $msg->nama_pengirim }}</td>
                                             <td class="px-4 py-3 text-slate-500 whitespace-nowrap">{{ $msg->email ?? '-' }}</td>
                                             <td class="px-4 py-3 text-slate-600 dark:text-slate-300 max-w-xs truncate">{{ $msg->pesan }}</td>
-                                            <td class="px-4 py-3 text-right text-slate-400 whitespace-nowrap">{{ $msg->created_at->diffForHumans() }}</td>
+                                            <td class="px-4 py-3 text-slate-400 whitespace-nowrap">{{ $msg->created_at->diffForHumans() }}</td>
+                                            <td class="px-4 py-3 text-right whitespace-nowrap">
+                                                <form action="{{ route('pesan.delete', $msg->id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus pesan ini?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="px-2.5 py-1 bg-red-50 text-red-600 hover:bg-red-100 font-bold rounded-lg transition">Hapus</button>
+                                                </form>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -658,7 +901,7 @@
                 @endisset
             </div>
 
-            <!-- 4. Kelola Testimoni Pengunjung (Admin dengan Tombol Hapus) -->
+            <!-- 5. Kelola Testimoni Pengunjung (Admin dengan Tombol Hapus) -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-purple-100 dark:border-slate-700 overflow-hidden p-6">
                 <h3 class="text-base font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
@@ -747,6 +990,18 @@
                         <p id="modalPeran" class="font-medium text-slate-700 dark:text-slate-300"></p>
                     </div>
                 </div>
+                <div id="modalFiturContainer" class="hidden">
+                    <h4 class="font-bold text-slate-700 dark:text-slate-200 mb-1">Fitur-Fitur dalam Proyek:</h4>
+                    <p id="modalFitur" class="leading-relaxed whitespace-pre-line"></p>
+                </div>
+                <div id="modalDokumentasiContainer" class="hidden border-l-4 border-purple-200 dark:border-purple-900 pl-3">
+                    <h4 class="font-bold text-slate-700 dark:text-slate-200 mb-1">Dokumentasi Proses Pekerjaan:</h4>
+                    <p id="modalDokumentasi" class="leading-relaxed"></p>
+                </div>
+                <div id="modalFeedbackContainer" class="hidden">
+                    <h4 class="font-bold text-slate-700 dark:text-slate-200 mb-1">Feedback User:</h4>
+                    <p id="modalFeedback" class="leading-relaxed italic text-purple-600 dark:text-purple-300"></p>
+                </div>
                 <div id="modalLinkContainer" class="flex gap-4 pt-3 border-t border-purple-100 dark:border-slate-700 hidden">
                     <a id="modalDemo" href="#" target="_blank" class="hidden bg-purple-500 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-purple-600 transition">Lihat Demo →</a>
                     <a id="modalGithub" href="#" target="_blank" class="hidden bg-slate-800 dark:bg-slate-700 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-slate-900 transition">Source Code GitHub →</a>
@@ -769,7 +1024,7 @@
     <!-- SCRIPT -->
     @auth
     <script>
-        function focusAndEdit(id, judul, kategori, deskripsi, permasalahan, tujuan, teknologi, peran, link_demo, link_github) {
+        function focusAndEdit(id, judul, kategori, deskripsi, permasalahan, tujuan, teknologi, peran, link_demo, link_github, fitur_fitur, dokumentasi, feedback_user) {
             document.getElementById('kelola-karya').scrollIntoView({ behavior: 'smooth' });
 
             document.getElementById('form-title').innerText = "Edit Project Anda ✦";
@@ -787,8 +1042,11 @@
             document.getElementById('tujuan').value = tujuan;
             document.getElementById('teknologi').value = teknologi;
             document.getElementById('peran').value = peran;
+            document.getElementById('fitur_fitur').value = fitur_fitur;
             document.getElementById('link_demo').value = link_demo;
             document.getElementById('link_github').value = link_github;
+            document.getElementById('dokumentasi').value = dokumentasi;
+            document.getElementById('feedback_user').value = feedback_user;
 
             document.getElementById('project-form').action = "/admin/update/" + id;
             document.getElementById('method-container').innerHTML = '<input type="hidden" name="_method" value="PUT">';
@@ -851,7 +1109,7 @@
             });
         }
 
-        function openDetailModal(judul, kategori, gambar, deskripsi, permasalahan, tujuan, teknologi, peran, link_demo, link_github) {
+        function openDetailModal(judul, kategori, gambar, deskripsi, permasalahan, tujuan, teknologi, peran, link_demo, link_github, fitur_fitur, dokumentasi, feedback_user) {
             document.getElementById('modalJudul').innerText = judul;
             document.getElementById('modalKategori').innerText = kategori;
             document.getElementById('modalGambar').src = gambar;
@@ -860,6 +1118,32 @@
             document.getElementById('modalTujuan').innerText = tujuan;
             document.getElementById('modalTeknologi').innerText = teknologi;
             document.getElementById('modalPeran').innerText = peran;
+
+            // Tampilkan bagian fitur, dokumentasi, dan feedback jika datanya tersedia
+            const fiturWrap = document.getElementById('modalFiturContainer');
+            const dokumentasiWrap = document.getElementById('modalDokumentasiContainer');
+            const feedbackWrap = document.getElementById('modalFeedbackContainer');
+
+            if (fitur_fitur && fitur_fitur.trim() !== '') {
+                document.getElementById('modalFitur').innerText = fitur_fitur;
+                fiturWrap.classList.remove('hidden');
+            } else {
+                fiturWrap.classList.add('hidden');
+            }
+
+            if (dokumentasi && dokumentasi.trim() !== '') {
+                document.getElementById('modalDokumentasi').innerText = dokumentasi;
+                dokumentasiWrap.classList.remove('hidden');
+            } else {
+                dokumentasiWrap.classList.add('hidden');
+            }
+
+            if (feedback_user && feedback_user.trim() !== '') {
+                document.getElementById('modalFeedback').innerText = '"' + feedback_user + '"';
+                feedbackWrap.classList.remove('hidden');
+            } else {
+                feedbackWrap.classList.add('hidden');
+            }
 
             const demoBtn = document.getElementById('modalDemo');
             const githubBtn = document.getElementById('modalGithub');
@@ -924,24 +1208,82 @@
             }
         });
 
+        // ==========================================
+        // MENU MOBILE (HAMBURGER)
+        // ==========================================
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.className = "fa-solid fa-xmark text-xs";
+            } else {
+                menu.classList.add('hidden');
+                icon.className = "fa-solid fa-bars text-xs";
+            }
+        }
+
+        // ==========================================
+        // TOGGLE DARK / LIGHT MODE
+        // ==========================================
         function toggleDarkMode() {
             const html = document.documentElement;
-            const icon = document.getElementById('theme-icon');
+            const icons = document.querySelectorAll('.theme-icon');
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
                 localStorage.theme = 'light';
-                icon.className = "fa-solid fa-moon text-[9px]";
+                icons.forEach(i => i.className = "theme-icon fa-solid fa-moon text-[9px]");
             } else {
                 html.classList.add('dark');
                 localStorage.theme = 'dark';
-                icon.className = "fa-solid fa-sun text-[9px] text-yellow-400";
+                icons.forEach(i => i.className = "theme-icon fa-solid fa-sun text-[9px] text-yellow-400");
             }
         }
 
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
-            document.getElementById('theme-icon').className = "fa-solid fa-sun text-[9px] text-yellow-400";
+            document.querySelectorAll('.theme-icon').forEach(i => i.className = "theme-icon fa-solid fa-sun text-[9px] text-yellow-400");
         }
+
+        // ==========================================
+        // ANIMASI REVEAL SAAT SCROLL
+        // ==========================================
+        const revealTargets = document.querySelectorAll('section');
+        revealTargets.forEach(sec => {
+            Array.from(sec.children).forEach((child, index) => {
+                child.classList.add('reveal');
+                child.style.transitionDelay = (index * 0.08) + 's';
+            });
+        });
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08 });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // ==========================================
+        // ANIMASI GANTI HALAMAN (fade saat pindah)
+        // ==========================================
+        document.querySelectorAll('a[href]').forEach(link => {
+            const href = link.getAttribute('href');
+            const isSamePage = href.startsWith('#') || href.startsWith('/#');
+            const isNewTab = link.getAttribute('target') === '_blank';
+            const isDownload = link.hasAttribute('download');
+
+            if (!isSamePage && !isNewTab && !isDownload) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.body.classList.add('page-leaving');
+                    setTimeout(() => window.location.href = href, 300);
+                });
+            }
+        });
     </script>
 </body>
 </html>

@@ -164,6 +164,14 @@ Route::middleware('auth')->group(function () {
 
 
     // ======================================
+    // HAPUS PESAN MASUK
+    // ======================================
+
+    Route::delete('/admin/message/delete/{id}', [AdminController::class, 'destroyMessage'])
+        ->name('pesan.delete');
+
+
+    // ======================================
     // HAPUS TESTIMONI
     // ======================================
 

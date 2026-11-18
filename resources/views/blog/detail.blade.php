@@ -5,10 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Artikel | Blog Pengembang</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            opacity: 0;
+            animation: pageFadeIn 0.6s ease forwards;
+        }
+        body.page-leaving {
+            animation: pageFadeOut 0.35s ease forwards;
+        }
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pageFadeOut {
+            from { opacity: 1; }
+            to   { opacity: 0; transform: translateY(-10px); }
+        }
+    </style>
 </head>
 <body class="bg-purple-50/30 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-[Poppins] min-h-screen py-20 px-4">
+    <script>
+        // Dark mode mengikuti preferensi dari halaman utama
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+
+        // Animasi ganti halaman: fade saat berpindah ke halaman lain
+        document.querySelectorAll('a[href]').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && !href.startsWith('#')) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.body.classList.add('page-leaving');
+                    setTimeout(() => window.location.href = href, 300);
+                });
+            }
+        });
+    </script>
     <div class="max-w-3xl mx-auto bg-white dark:bg-slate-800 p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-purple-100 dark:border-slate-700 space-y-6">
         <a href="/#blog" class="inline-flex items-center gap-2 text-xs font-bold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-slate-700 px-4 py-2 rounded-xl transition hover:bg-purple-100">
             <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
