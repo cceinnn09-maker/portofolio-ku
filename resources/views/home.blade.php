@@ -353,16 +353,14 @@
             </div>
         </div>
 
-        <!-- Pengalaman PLK -->
+        <!-- Pengalaman PLK (ringkasan tanpa foto; foto hanya di section Pengalaman) -->
         <div class="mt-6 bg-purple-50/50 dark:bg-slate-800 p-6 md:p-8 rounded-3xl border border-purple-100 dark:border-slate-700">
             <h3 class="font-bold text-purple-600 dark:text-purple-400 mb-4"><i class="fa-solid fa-briefcase mr-2"></i> Pengalaman PLK (Praktik Latihan Kerja)</h3>
             @forelse($plkExperiences as $plk)
-                <div class="flex flex-col md:flex-row gap-5">
-                    @if($plk->gambar)
-                        <button type="button" onclick="openImagePreview('{{ asset('img/experiences/' . $plk->gambar) }}', '{{ addslashes($plk->judul) }}')" class="w-full md:w-56 h-40 rounded-2xl overflow-hidden bg-purple-100 dark:bg-slate-700 flex-shrink-0">
-                            <img src="{{ asset('img/experiences/' . $plk->gambar) }}" alt="{{ $plk->judul }}" class="w-full h-full object-cover hover:scale-105 transition duration-500">
-                        </button>
-                    @endif
+                <div class="flex items-start gap-3 {{ ! $loop->last ? 'pb-4 mb-4 border-b border-purple-100 dark:border-slate-700' : '' }}">
+                    <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-xl flex items-center justify-center text-base flex-shrink-0">
+                        <i class="fa-solid fa-briefcase"></i>
+                    </div>
                     <div>
                         <h4 class="font-bold text-base">{{ $plk->judul }}</h4>
                         <p class="text-xs text-purple-500 font-medium mb-2">{{ $plk->posisi ? $plk->posisi . ' • ' : '' }}{{ $plk->institusi }} @if($plk->periode) • {{ $plk->periode }} @endif</p>

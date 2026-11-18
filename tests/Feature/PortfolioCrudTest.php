@@ -214,4 +214,29 @@ class PortfolioCrudTest extends TestCase
             }
         }
     }
+
+    public function test_experience_photo_only_shows_in_experience_section(): void
+    {
+        Experience::create([
+            'judul' => 'PLK Foto Uji',
+            'posisi' => 'Peserta',
+            'institusi' => 'PT Contoh',
+            'deskripsi' => 'Deskripsi uji',
+            'gambar' => 'foto-plk-uji.jpg',
+            'jenis' => 'plk',
+            'urutan' => 1,
+        ]);
+
+        $html = $this->get('/')->assertOk()->getContent();
+
+        $about = \Illuminate\Support\Str::between($html, 'id="tentang"', 'id="skills"');
+        $experience = \Illuminate\Support\Str::between($html, 'id="pengalaman"', 'id="cv"');
+
+        // Section Tentang Saya harus bersih dari foto.
+        $this->assertStringNotContainsString('<img', $about);
+        $this->assertStringNotContainsString('foto-plk-uji.jpg', $about);
+
+        // Foto tetap tampil di section Pengalaman.
+        $this->assertStringContainsString('foto-plk-uji.jpg', $experience);
+    }
 }
