@@ -3,95 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Artikel | Blog Pengembang</title>
+    <title>{{ $post->judul }} | {{ $settings['site_title'] ?? 'Portofolio Nurhaina' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = { darkMode: 'class' }
-    </script>
+    <script>tailwind.config = { darkMode: 'class' }</script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body {
-            opacity: 0;
-            animation: pageFadeIn 0.6s ease forwards;
-        }
-        body.page-leaving {
-            animation: pageFadeOut 0.35s ease forwards;
-        }
-        @keyframes pageFadeIn {
-            from { opacity: 0; transform: translateY(14px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pageFadeOut {
-            from { opacity: 1; }
-            to   { opacity: 0; transform: translateY(-10px); }
-        }
+        body { opacity: 0; animation: pageFadeIn .5s ease forwards; }
+        body.page-leaving { animation: pageFadeOut .3s ease forwards; }
+        @keyframes pageFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pageFadeOut { from { opacity: 1; } to { opacity: 0; } }
     </style>
 </head>
-<body class="bg-purple-50/30 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-[Poppins] min-h-screen py-20 px-4">
+<body class="bg-purple-50/30 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-[Poppins] min-h-screen py-16 px-4">
     <script>
-        // Dark mode mengikuti preferensi dari halaman utama
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         }
+    </script>
 
-        // Animasi ganti halaman: fade saat berpindah ke halaman lain
+    <article class="max-w-3xl mx-auto bg-white dark:bg-slate-800 p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-purple-100 dark:border-slate-700 space-y-6">
+        <div class="flex items-center justify-between gap-3">
+            <a href="{{ route('home') }}#blog" class="inline-flex items-center gap-2 text-xs font-bold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-slate-700 px-4 py-2 rounded-xl transition hover:bg-purple-100">
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
+            </a>
+            <button type="button" onclick="toggleTheme()" class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-slate-700 text-purple-600 dark:text-yellow-400 flex items-center justify-center" title="Ganti tema">
+                <i id="theme-icon" class="fa-solid fa-moon text-xs"></i>
+            </button>
+        </div>
+
+        <div>
+            @if($post->kategori)
+                <span class="text-[10px] font-bold bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 px-3 py-1 rounded-full uppercase tracking-wider">{{ $post->kategori }}</span>
+            @endif
+            <h1 class="text-3xl md:text-4xl font-bold mt-4">{{ $post->judul }}</h1>
+            <p class="text-xs text-slate-400 mt-2">
+                Dipublikasikan oleh {{ $post->penulis ?: 'Nurhaina' }}
+                @if($post->tanggal)
+                    • {{ $post->tanggal->format('d M Y') }}
+                @endif
+            </p>
+        </div>
+
+        @if($post->gambar)
+            <div class="rounded-2xl overflow-hidden bg-purple-100 dark:bg-slate-700">
+                <img src="{{ asset('img/posts/' . $post->gambar) }}" alt="{{ $post->judul }}" class="w-full max-h-[420px] object-cover">
+            </div>
+        @endif
+
+        @if($post->ringkasan)
+            <p class="text-sm text-slate-500 dark:text-slate-300 leading-relaxed font-medium border-l-4 border-purple-300 dark:border-purple-800 pl-4">
+                {{ $post->ringkasan }}
+            </p>
+        @endif
+
+        <div class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-light space-y-4 pt-4 border-t border-purple-100 dark:border-slate-700">
+            {!! nl2br(e($post->konten)) !!}
+        </div>
+
+        <div class="pt-6 border-t border-purple-100 dark:border-slate-700 flex flex-wrap gap-3">
+            <a href="{{ route('home') }}#blog" class="bg-purple-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-purple-600 transition">Kembali ke Daftar Artikel</a>
+            <a href="{{ route('home') }}#kontak" class="bg-purple-100 dark:bg-slate-700 text-purple-700 dark:text-purple-300 px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-purple-200 transition">Hubungi Saya</a>
+        </div>
+    </article>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.theme = 'light';
+                icon.className = 'fa-solid fa-moon text-xs';
+            } else {
+                html.classList.add('dark');
+                localStorage.theme = 'dark';
+                icon.className = 'fa-solid fa-sun text-xs text-yellow-400';
+            }
+        }
+
+        if (document.documentElement.classList.contains('dark')) {
+            document.getElementById('theme-icon').className = 'fa-solid fa-sun text-xs text-yellow-400';
+        }
+
         document.querySelectorAll('a[href]').forEach(link => {
             const href = link.getAttribute('href');
-            if (href && !href.startsWith('#')) {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
+            if (!href) return;
+            const isSamePage = href.startsWith('#') || href.includes('#');
+            const isNewTab = link.getAttribute('target') === '_blank';
+            if (!isSamePage && !isNewTab) {
+                link.addEventListener('click', function (event) {
+                    event.preventDefault();
                     document.body.classList.add('page-leaving');
-                    setTimeout(() => window.location.href = href, 300);
+                    setTimeout(() => window.location.href = href, 250);
                 });
             }
         });
     </script>
-    <div class="max-w-3xl mx-auto bg-white dark:bg-slate-800 p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-purple-100 dark:border-slate-700 space-y-6">
-        <a href="/#blog" class="inline-flex items-center gap-2 text-xs font-bold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-slate-700 px-4 py-2 rounded-xl transition hover:bg-purple-100">
-            <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
-        </a>
-
-        @if(isset($id) && $id == 2)
-            <!-- KONTEN ARTIKEL 2 -->
-            <span class="text-[10px] font-bold bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 px-3 py-1 rounded-full uppercase tracking-wider">Kolaborasi Tim</span>
-            <h1 class="text-3xl md:text-4xl font-bold">Pengalaman Kerja Tim PPLG SMKN 2 Banjarmasin</h1>
-            <p class="text-xs text-slate-400">Dipublikasikan oleh Nurhaina • 14 November 2026</p>
-
-            <div class="space-y-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-light pt-4 border-t border-purple-100 dark:border-slate-700">
-                <p>
-                    Bekerja dalam tim pengembangan perangkat lunak memberikan pengalaman nyata tentang bagaimana dinamika industri IT bekerja. Di jurusan PPLG SMK Negeri 2 Banjarmasin, proyek kelompok menuntut pembagian tugas yang jelas antara pemrogram (*programmer*), pengelola database, dan perancang antarmuka (*UI/UX Designer*).
-                </p>
-                <p>
-                    Sebagai UI/UX Designer dalam tim, tantangan utama saya adalah menerjemahkan ide-ide abstrak dari rekan kelompok menjadi cetak biru (*wireframe*) yang terstruktur di Figma. Komunikasi yang intensif dengan anggota tim memastikan bahwa setiap fitur yang dirancang dapat diimplementasikan dengan baik menggunakan Laravel dan MySQL.
-                </p>
-                <p>
-                    Pengalaman kolaborasi ini mengajarkan saya arti penting dari toleransi, kedisiplinan tenggat waktu, dan saling melengkapi keahlian demi mencapai tujuan proyek yang solutif dan berkualitas tinggi.
-                </p>
-            </div>
-        @else
-            <!-- KONTEN ARTIKEL 1 (DEFAULT) -->
-            <span class="text-[10px] font-bold bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 px-3 py-1 rounded-full uppercase tracking-wider">UI/UX Workflow</span>
-            <h1 class="text-3xl md:text-4xl font-bold">Pentingnya User Flow dalam Perancangan Aplikasi</h1>
-            <p class="text-xs text-slate-400">Dipublikasikan oleh Nurhaina • 16 November 2026</p>
-
-            <div class="space-y-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-light pt-4 border-t border-purple-100 dark:border-slate-700">
-                <p>
-                    Dalam proses pengembangan portofolio dan proyek aplikasi ini, tahapan riset pengguna dan perancangan alur (*user flow*) di Figma memegang peran yang sangat krusial. Sebagai seorang UI/UX Designer, fokus utama saya adalah memastikan bahwa setiap halaman aplikasi mudah dipahami, memiliki hierarki visual yang jelas, serta nyaman dipandang oleh pengguna.
-                </p>
-                <p>
-                    User flow membantu kita memetakan langkah-langkah yang harus dilalui oleh pengguna untuk mencapai tujuan mereka di dalam aplikasi, sehingga meminimalisir kebingungan antarmuka sebelum tahap pengkodean Laravel dimulai.
-                </p>
-                <p>
-                    Melalui catatan blog pengembang ini, saya mendokumentasikan setiap langkah perjalanan kreatif, mulai dari penentuan palet warna ungu pastel, penyusunan struktur navigasi, hingga uji coba antarmuka agar standar kualitas UKK dapat terpenuhi secara maksimal.
-                </p>
-            </div>
-        @endif
-
-        <div class="pt-6 border-t border-purple-100 dark:border-slate-700 flex justify-between items-center text-xs text-slate-400">
-            <span>SMK Negeri 2 Banjarmasin</span>
-            <a href="/" class="font-bold text-purple-500 hover:underline">Nurhaina Portfolio ✦</a>
-        </div>
-    </div>
 </body>
 </html>

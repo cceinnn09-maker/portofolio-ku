@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Testimonial extends Model
 {
-    protected $fillable = [
-        'nama',
-        'profesi',
-        'pesan',
+    protected $guarded = [];
+
+    protected $casts = [
+        'is_visible' => 'boolean',
     ];
 }
