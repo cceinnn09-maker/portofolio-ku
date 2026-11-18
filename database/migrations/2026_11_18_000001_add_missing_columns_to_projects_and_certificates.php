@@ -9,46 +9,81 @@ return new class extends Migration
     /**
      * Tambah kolom-kolom yang dibutuhkan aplikasi
      * namun belum ada di tabel projects & certificates.
+     *
+     * Dibuat idempoten supaya aman dijalankan pada database yang
+     * sudah termigrasi sebagian.
      */
     public function up(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-            $table->string('judul')->nullable()->after('id');
-            $table->string('kategori')->nullable()->after('nama_project');
-            $table->text('permasalahan')->nullable()->after('deskripsi');
-            $table->text('tujuan')->nullable()->after('permasalahan');
-            $table->string('teknologi')->nullable()->after('tujuan');
-            $table->string('peran')->nullable()->after('teknologi');
-            $table->text('fitur_fitur')->nullable()->after('peran');
-            $table->string('link_demo')->nullable()->after('fitur_fitur');
-            $table->string('link_github')->nullable()->after('link_demo');
-            $table->text('dokumentasi')->nullable()->after('link_github');
-            $table->text('feedback_user')->nullable()->after('dokumentasi');
+        $projectColumns = [
+            'judul' => fn (Blueprint $table) => $table->string('judul')->nullable(),
+            'kategori' => fn (Blueprint $table) => $table->string('kategori')->nullable(),
+            'permasalahan' => fn (Blueprint $table) => $table->text('permasalahan')->nullable(),
+            'tujuan' => fn (Blueprint $table) => $table->text('tujuan')->nullable(),
+            'teknologi' => fn (Blueprint $table) => $table->string('teknologi')->nullable(),
+            'peran' => fn (Blueprint $table) => $table->string('peran')->nullable(),
+            'fitur_fitur' => fn (Blueprint $table) => $table->text('fitur_fitur')->nullable(),
+            'link_demo' => fn (Blueprint $table) => $table->string('link_demo')->nullable(),
+            'link_github' => fn (Blueprint $table) => $table->string('link_github')->nullable(),
+            'dokumentasi' => fn (Blueprint $table) => $table->text('dokumentasi')->nullable(),
+            'feedback_user' => fn (Blueprint $table) => $table->text('feedback_user')->nullable(),
+        ];
 
-            // Kolom lama dibuat nullable agar fleksibel
-            $table->string('nama_project')->nullable()->change();
-            $table->string('gambar')->nullable()->change();
+        Schema::table('projects', function (Blueprint $table) use ($projectColumns) {
+            foreach ($projectColumns as $name => $definition) {
+                if (! Schema::hasColumn('projects', $name)) {
+                    $definition($table);
+                }
+            }
         });
 
-        Schema::table('certificates', function (Blueprint $table) {
-            $table->string('nama_sertifikat')->nullable()->after('id');
-            $table->string('pemberi')->nullable()->after('nama_sertifikat');
-            $table->string('tahun')->nullable()->after('pemberi');
-            $table->string('gambar')->nullable()->after('tahun');
+        $certificateColumns = [
+            'nama_sertifikat' => fn (Blueprint $table) => $table->string('nama_sertifikat')->nullable(),
+            'pemberi' => fn (Blueprint $table) => $table->string('pemberi')->nullable(),
+            'tahun' => fn (Blueprint $table) => $table->string('tahun')->nullable(),
+            'gambar' => fn (Blueprint $table) => $table->string('gambar')->nullable(),
+        ];
+
+        Schema::table('certificates', function (Blueprint $table) use ($certificateColumns) {
+            foreach ($certificateColumns as $name => $definition) {
+                if (! Schema::hasColumn('certificates', $name)) {
+                    $definition($table);
+                }
+            }
+        });
+
+        // Kolom lama dibuat nullable agar fleksibel (aman diulang).
+        Schema::table('projects', function (Blueprint $table) {
+            $table->string('nama_project')->nullable()->change();
+            $table->string('gambar')->nullable()->change();
         });
     }
 
     public function down(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-            $table->dropColumn([
+        $projectColumns = array_values(array_filter(
+            [
                 'judul', 'kategori', 'permasalahan', 'tujuan', 'teknologi', 'peran',
                 'fitur_fitur', 'link_demo', 'link_github', 'dokumentasi', 'feedback_user',
-            ]);
-        });
+            ],
+            fn (string $column) => Schema::hasColumn('projects', $column)
+        ));
 
-        Schema::table('certificates', function (Blueprint $table) {
-            $table->dropColumn(['nama_sertifikat', 'pemberi', 'tahun', 'gambar']);
-        });
+        if ($projectColumns !== []) {
+            Schema::table('projects', function (Blueprint $table) use ($projectColumns) {
+                $table->dropColumn($projectColumns);
+            });
+        }
+
+        $certificateColumns = array_values(array_filter(
+            ['nama_sertifikat', 'pemberi', 'tahun', 'gambar'],
+            fn (string $column) => Schema::hasColumn('certificates', $column)
+        ));
+
+        if ($certificateColumns !== []) {
+            Schema::table('certificates', function (Blueprint $table) use ($certificateColumns) {
+                $table->dropColumn($certificateColumns);
+            });
+        }
     }
 };

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasColumn('profiles', 'file_cv')) {
+            return;
+        }
+
         Schema::table('profiles', function (Blueprint $table) {
             $table->string('file_cv')->nullable();
         });
@@ -21,6 +25,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (! Schema::hasColumn('profiles', 'file_cv')) {
+            return;
+        }
+
         Schema::table('profiles', function (Blueprint $table) {
             $table->dropColumn('file_cv');
         });

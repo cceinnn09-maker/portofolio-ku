@@ -12,28 +12,49 @@ return new class extends Migration
         // ============================================
         // PROFIL DEFAULT
         // ============================================
-        DB::table('profiles')->updateOrInsert(
-            ['id' => 1],
-            [
-                'nama_lengkap' => 'Nurhaina',
-                'kelas' => 'XII PPLG',
-                'kompetensi_keahlian' => 'Pengembangan Perangkat Lunak dan Gim (PPLG)',
-                'deskripsi_singkat' => 'Berfokus khusus pada perancangan UI/UX Design dan antarmuka aplikasi digital yang solutif serta estetis.',
-                'foto' => 'ennnaa.jpg',
-                'email' => 'nurhaina.pplg@gmail.com',
-                'github' => 'https://github.com/',
-                'instagram' => 'https://www.instagram.com/ainnaanr__',
-                'linkedin' => 'https://www.linkedin.com/',
-                'tiktok' => 'https://www.tiktok.com/@iniii.ena',
-                'alamat' => 'Banjarmasin, Kalimantan Selatan',
-                'about_text' => 'Saya adalah siswi kelas PPLG di SMK Negeri 2 Banjarmasin. Berfokus mendalami bidang UI/UX Design, berpengalaman Praktik Latihan Kerja (PLK) di instansi pemerintahan, serta terbiasa berkolaborasi dalam tim untuk merancang sistem aplikasi.',
-                'minat_teknologi' => 'Tertarik pada UI/UX Design & Product Design. Teknologi yang dikuasai: Figma, HTML, CSS, Bootstrap, dasar Laravel, dan MySQL.',
-                'keahlian_utama' => 'UI/UX Wireframing & Design, User Research, dan Perancangan Layout Antarmuka.',
-                'cita_cita' => 'Menjadi UI/UX Designer profesional yang menghadirkan pengalaman pengguna yang intuitif dan menarik.',
-                'updated_at' => $now,
-                'created_at' => $now,
-            ]
-        );
+        // Jangan menimpa konten yang sudah diedit admin. Isi hanya kolom
+        // yang masih kosong (mis. saat database lama belum punya kolom baru).
+        $profileDefaults = [
+            'nama_lengkap' => 'Nurhaina',
+            'kelas' => 'XII PPLG',
+            'kompetensi_keahlian' => 'Pengembangan Perangkat Lunak dan Gim (PPLG)',
+            'deskripsi_singkat' => 'Berfokus khusus pada perancangan UI/UX Design dan antarmuka aplikasi digital yang solutif serta estetis.',
+            'foto' => 'ennnaa.jpg',
+            'email' => 'nurhaina.pplg@gmail.com',
+            'github' => 'https://github.com/',
+            'instagram' => 'https://www.instagram.com/ainnaanr__',
+            'linkedin' => 'https://www.linkedin.com/',
+            'tiktok' => 'https://www.tiktok.com/@iniii.ena',
+            'alamat' => 'Banjarmasin, Kalimantan Selatan',
+            'about_text' => 'Saya adalah siswi kelas PPLG di SMK Negeri 2 Banjarmasin. Berfokus mendalami bidang UI/UX Design, berpengalaman Praktik Latihan Kerja (PLK) di instansi pemerintahan, serta terbiasa berkolaborasi dalam tim untuk merancang sistem aplikasi.',
+            'minat_teknologi' => 'Tertarik pada UI/UX Design & Product Design. Teknologi yang dikuasai: Figma, HTML, CSS, Bootstrap, dasar Laravel, dan MySQL.',
+            'keahlian_utama' => 'UI/UX Wireframing & Design, User Research, dan Perancangan Layout Antarmuka.',
+            'cita_cita' => 'Menjadi UI/UX Designer profesional yang menghadirkan pengalaman pengguna yang intuitif dan menarik.',
+        ];
+
+        $existingProfile = DB::table('profiles')->where('id', 1)->first();
+
+        if ($existingProfile === null) {
+            DB::table('profiles')->insert(
+                ['id' => 1]
+                + $profileDefaults
+                + ['created_at' => $now, 'updated_at' => $now]
+            );
+        } else {
+            $profileUpdates = [];
+
+            foreach ($profileDefaults as $column => $value) {
+                if (($existingProfile->{$column} ?? null) === null) {
+                    $profileUpdates[$column] = $value;
+                }
+            }
+
+            if ($profileUpdates !== []) {
+                DB::table('profiles')
+                    ->where('id', 1)
+                    ->update($profileUpdates + ['updated_at' => $now]);
+            }
+        }
 
         // ============================================
         // RIWAYAT PENDIDIKAN

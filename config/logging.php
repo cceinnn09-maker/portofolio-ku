@@ -18,7 +18,9 @@ return [
     |
     */
 
-    'default' => env('LOG_CHANNEL', 'stack'),
+    // Default ke "stderr" supaya di platform seperti Railway pesan error
+    // langsung tampil di Deploy Logs (bukan hanya tersimpan di file).
+    'default' => env('LOG_CHANNEL', 'stderr'),
 
     /*
     |--------------------------------------------------------------------------
@@ -54,7 +56,9 @@ return [
 
         'stack' => [
             'driver' => 'stack',
-            'channels' => explode(',', (string) env('LOG_STACK', 'single')),
+            // Default stack juga diarahkan ke stderr agar error tetap terlihat
+            // di Deploy Logs walaupun LOG_CHANNEL=stack.
+            'channels' => explode(',', (string) env('LOG_STACK', 'stderr')),
             'ignore_exceptions' => false,
         ],
 

@@ -1,12 +1,13 @@
 [phases.build]
+# Jangan jalankan cache:clear di fase build: store default "database"
+# belum tentu bisa diakses saat image dibangun.
 cmds = [
     "composer install --no-dev --optimize-autoloader",
     "php artisan view:clear",
-    "php artisan cache:clear",
     "php artisan config:clear"
 ]
 
 [start]
-# Bersihkan cache konfigurasi & pastikan tabel sessions/cache ada
-# sebelum server PHP melayani request.
-cmd = "php artisan config:clear && php artisan migrate --force && php -S 0.0.0.0:$PORT -t public"
+# Jalankan migrasi + optimize:clear sebelum server menyala.
+# Script yang sama dipakai oleh Dockerfile/railway.json agar konsisten.
+cmd = "sh docker/start.sh"

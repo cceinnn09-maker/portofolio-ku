@@ -9,16 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-  public function up(): void
-{
-    Schema::create('messages', function (Blueprint $table) {
-        $table->id();
-        $table->string('nama_pengirim');
-        $table->string('email')->nullable();
-        $table->text('pesan');
-        $table->timestamps();
-    });
-}
+    public function up(): void
+    {
+        if (Schema::hasTable('messages')) {
+            return;
+        }
+
+        Schema::create('messages', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_pengirim');
+            $table->string('email')->nullable();
+            $table->text('pesan');
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

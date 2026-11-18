@@ -52,7 +52,14 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    // Railway menyediakan RAILWAY_PUBLIC_DOMAIN. Pakai sebagai fallback agar
+    // URL yang di-generate (form, redirect, asset) tetap mengarah ke domain
+    // publik yang benar walaupun APP_URL belum diset.
+    'url' => env('APP_URL') ?: (
+        env('RAILWAY_PUBLIC_DOMAIN')
+            ? 'https://'.env('RAILWAY_PUBLIC_DOMAIN')
+            : 'http://localhost'
+    ),
 
     /*
     |--------------------------------------------------------------------------
