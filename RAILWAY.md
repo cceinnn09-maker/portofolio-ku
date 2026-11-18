@@ -51,11 +51,15 @@ Script tersebut, setiap kali container start:
 1. Mencetak ringkasan environment (tanpa password).
 2. Membuat `APP_KEY` sementara jika belum diset (agar tidak 500).
 3. `php artisan config:clear`
-4. `php artisan migrate --force` → membuat tabel `sessions`, `settings`, `educations`, dll.
-5. `php artisan optimize:clear`
-6. Menjalankan `php -S 0.0.0.0:$PORT -t public`
+4. `php artisan storage:link` → symlink `public/storage` ke `storage/app/public`
+   agar foto testimoni bisa diakses browser.
+5. `php artisan migrate --force` → membuat tabel `sessions`, `settings`, `educations`, dll.
+6. `php artisan optimize:clear`
+7. Menjalankan `php -S 0.0.0.0:$PORT -t public`
 
-Jika migrasi gagal, container berhenti dan pesan error lengkap muncul di **Deploy Logs** (karena log diarahkan ke `stderr`).
+Jika migrasi gagal, container tetap hidup dan aplikasi mencoba migrasi lagi otomatis
+pada request pertama (lihat `AppServiceProvider`), sehingga gangguan database sesaat
+tidak membuat situs mati total.
 
 ### Kenapa dulu `GET /` error 500?
 
@@ -81,8 +85,13 @@ Sekarang semua migrasi bersifat **idempoten** (aman diulang):
 - Jika masih 500, baca baris error terakhir di Deploy Logs; sekarang pesan detailnya sudah terlihat.
 
 > Catatan: file yang di-upload lewat admin disimpan di folder `public/img/...`
-> di dalam container. Tanpa Railway Volume, file tersebut hilang saat redeploy.
-> Untuk produksi jangka panjang, tambahkan Volume dan mount ke `public/img`.
+> di dalam container. Foto testimoni pengunjung disimpan di
+> `storage/app/public/testimonials` dan diakses lewat `public/storage` (symlink
+> yang dibuat otomatis oleh `storage:link`).
+> Tanpa Railway Volume, semua file tersebut hilang saat redeploy.
+> Untuk produksi jangka panjang, tambahkan Volume dan mount ke
+> `/var/www/html/storage/app/public` (foto testimoni) serta `/var/www/html/public/img`
+> (foto admin).
 
 
 ## 4. Membuat APP_KEY

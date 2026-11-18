@@ -83,6 +83,17 @@ class AppServiceProvider extends ServiceProvider
         }
 
         try {
+            // Pastikan symlink public/storage ada agar foto testimoni
+            // (storage/app/public) bisa diakses browser.
+            if (! file_exists(public_path('storage'))) {
+                try {
+                    Artisan::call('storage:link');
+                    Log::info('Symlink public/storage berhasil dibuat.');
+                } catch (\Throwable $e) {
+                    Log::error('Gagal membuat symlink storage: '.$e->getMessage());
+                }
+            }
+
             // Selalu jalankan migrate pada request pertama container.
             // Jika start command Railway tidak menjalankan migrasi, langkah ini
             // yang menyelamatkan; jika sudah dijalankan, migrate hanya
@@ -120,6 +131,7 @@ class AppServiceProvider extends ServiceProvider
                 && Schema::hasColumn('experiences', 'jenis')
                 && Schema::hasColumn('posts', 'konten')
                 && Schema::hasColumn('testimonials', 'is_visible')
+                && Schema::hasColumn('testimonials', 'foto')
                 && Schema::hasColumn('certificates', 'jenis');
         } catch (\Throwable $e) {
             return false;

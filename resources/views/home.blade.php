@@ -23,6 +23,7 @@
             opacity: 0;
             transform: translateY(24px);
             transition: opacity 0.6s ease, transform 0.6s ease;
+            will-change: opacity, transform;
         }
         .reveal.revealed { opacity: 1; transform: translateY(0); }
 
@@ -34,6 +35,83 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+        }
+
+        /* ============================================================
+           IKON TEMA (dark / light)
+           ============================================================ */
+        .theme-icon {
+            font-size: 13px;
+            line-height: 1;
+            transition: transform 0.4s ease;
+        }
+        .theme-toggle:hover .theme-icon { transform: rotate(25deg) scale(1.05); }
+
+        /* ============================================================
+           INDIKATOR NAVBAR AKTIF
+           ============================================================ */
+        .nav-link {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            transition: color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .nav-link.nav-active {
+            color: #7c3aed;
+            background-color: #f3e8ff;
+            box-shadow: inset 0 0 0 1px #e9d5ff;
+        }
+        html.dark .nav-link.nav-active {
+            color: #e9d5ff;
+            background-color: rgba(124, 58, 237, 0.22);
+            box-shadow: inset 0 0 0 1px rgba(167, 139, 250, 0.35);
+        }
+        .mobile-link.nav-active {
+            color: #7c3aed;
+            background-color: #faf5ff;
+            font-weight: 700;
+        }
+        html.dark .mobile-link.nav-active {
+            color: #e9d5ff;
+            background-color: rgba(124, 58, 237, 0.18);
+        }
+
+        /* ============================================================
+           LIGHT MODE: bayangan card lebih tegas & kontras lebih nyaman
+           ============================================================ */
+        html:not(.dark) body {
+            background-color: #f7f4fd;
+        }
+        html:not(.dark) .shadow-sm {
+            box-shadow:
+                0 6px 22px -10px rgba(88, 28, 135, 0.28),
+                0 2px 6px -3px rgba(88, 28, 135, 0.12);
+        }
+        html:not(.dark) .shadow-md {
+            box-shadow:
+                0 12px 30px -12px rgba(88, 28, 135, 0.32),
+                0 4px 10px -4px rgba(88, 28, 135, 0.16);
+        }
+        html:not(.dark) .shadow-xl {
+            box-shadow:
+                0 26px 55px -20px rgba(88, 28, 135, 0.34),
+                0 12px 24px -14px rgba(88, 28, 135, 0.18);
+        }
+        /* Garis tepi card sedikit lebih jelas di light mode */
+        html:not(.dark) .border-purple-100 { border-color: #e6d9f8; }
+        /* Teks sekunder dinaikkan kontrasnya agar tidak menyatu dengan background */
+        html:not(.dark) .text-slate-400 { color: #64748b; }
+        html:not(.dark) .text-slate-500 { color: #475569; }
+
+        /* ============================================================
+           HORMATI PREFERENSI REDUCED MOTION
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            body { animation: none; opacity: 1; }
+            .reveal { opacity: 1; transform: none; transition: none; }
         }
     </style>
 </head>
@@ -60,39 +138,39 @@
 <header class="fixed top-0 left-0 w-full z-50 flex justify-center py-3 px-4">
     <nav class="w-full max-w-6xl relative">
         <!-- Desktop -->
-        <ul class="hidden lg:flex items-center justify-center gap-3 lg:gap-4 bg-white/85 dark:bg-slate-800/90 backdrop-blur-md px-5 py-3 rounded-full shadow-md border border-purple-100 dark:border-slate-700 text-[11px]">
-            <li><a href="#beranda" class="hover:text-purple-500 font-medium transition">Beranda</a></li>
-            <li><a href="#tentang" class="hover:text-purple-500 font-medium transition">Tentang</a></li>
-            <li><a href="#skills" class="hover:text-purple-500 font-medium transition">Skills</a></li>
-            <li><a href="#project" class="hover:text-purple-500 font-medium transition">Project</a></li>
-            <li><a href="#sertifikat" class="hover:text-purple-500 font-medium transition">Sertifikat</a></li>
-            <li><a href="#pengalaman" class="hover:text-purple-500 font-medium transition">Pengalaman</a></li>
-            <li><a href="#cv" class="hover:text-purple-500 font-medium transition">CV</a></li>
-            <li><a href="#blog" class="hover:text-purple-500 font-medium transition">Blog</a></li>
-            <li><a href="#testimoni" class="hover:text-purple-500 font-medium transition">Testimoni</a></li>
-            <li><a href="#kontak" class="hover:text-purple-500 font-medium transition">Kontak</a></li>
-            <li>
-                <button onclick="toggleDarkMode()" class="w-6 h-6 rounded-full bg-purple-100 dark:bg-slate-700 flex items-center justify-center text-purple-600 dark:text-yellow-400 transition" title="Ganti Tema">
-                    <i id="theme-icon" class="theme-icon fa-solid fa-moon text-[9px]"></i>
+        <ul class="hidden lg:flex items-center justify-center gap-0.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl px-3 py-2 rounded-full shadow-lg shadow-purple-900/5 border border-purple-100/80 dark:border-slate-700/80 text-[13px]">
+            <li><a href="#beranda" data-nav-link="beranda" class="nav-link px-3.5 py-2 font-medium text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-700/60 whitespace-nowrap">Beranda</a></li>
+            <li><a href="#tentang" data-nav-link="tentang" class="nav-link px-3.5 py-2 font-medium text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-700/60 whitespace-nowrap">Tentang</a></li>
+            <li><a href="#skills" data-nav-link="skills" class="nav-link px-3.5 py-2 font-medium text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-700/60 whitespace-nowrap">Skills</a></li>
+            <li><a href="#project" data-nav-link="project" class="nav-link px-3.5 py-2 font-medium text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-700/60 whitespace-nowrap">Project</a></li>
+            <li><a href="#sertifikat" data-nav-link="sertifikat" class="nav-link px-3.5 py-2 font-medium text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-700/60 whitespace-nowrap">Sertifikat</a></li>
+            <li><a href="#pengalaman" data-nav-link="pengalaman" class="nav-link px-3.5 py-2 font-medium text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-700/60 whitespace-nowrap">Pengalaman</a></li>
+            <li><a href="#cv" data-nav-link="cv" class="nav-link px-3.5 py-2 font-medium text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-700/60 whitespace-nowrap">CV</a></li>
+            <li><a href="#blog" data-nav-link="blog" class="nav-link px-3.5 py-2 font-medium text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-700/60 whitespace-nowrap">Blog</a></li>
+            <li><a href="#testimoni" data-nav-link="testimoni" class="nav-link px-3.5 py-2 font-medium text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-700/60 whitespace-nowrap">Testimoni</a></li>
+            <li><a href="#kontak" data-nav-link="kontak" class="nav-link px-3.5 py-2 font-medium text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-700/60 whitespace-nowrap">Kontak</a></li>
+            <li class="ml-1">
+                <button type="button" onclick="toggleDarkMode()" class="theme-toggle group w-9 h-9 rounded-full bg-gradient-to-br from-purple-100 to-purple-200 dark:from-slate-700 dark:to-slate-800 text-purple-600 dark:text-amber-300 flex items-center justify-center ring-1 ring-purple-200/80 dark:ring-slate-600/80 hover:ring-purple-400 hover:scale-105 transition-all duration-300" title="Ganti Tema" aria-label="Ganti tema terang/gelap">
+                    <i id="theme-icon" class="theme-icon fa-solid fa-moon"></i>
                 </button>
             </li>
             @auth
-                <li><a href="{{ route('admin.dashboard') }}" class="text-purple-600 dark:text-purple-400 font-bold transition">Admin</a></li>
-                <li class="border-l border-purple-200 dark:border-slate-700 pl-2">
+                <li class="ml-1"><a href="{{ route('admin.dashboard') }}" class="px-3.5 py-2 rounded-full bg-purple-50 dark:bg-slate-700 text-purple-700 dark:text-purple-300 font-bold hover:bg-purple-100 dark:hover:bg-slate-600 transition whitespace-nowrap">Admin</a></li>
+                <li class="border-l border-purple-200 dark:border-slate-700 pl-2 ml-1">
                     <form action="{{ route('logout') }}" method="POST" class="inline">
                         @csrf
-                        <button type="submit" class="text-red-500 text-[10px] font-bold hover:underline">Logout</button>
+                        <button type="submit" class="text-red-500 text-[11px] font-bold hover:underline">Logout</button>
                     </form>
                 </li>
             @else
-                <li><a href="/login" class="bg-purple-400 text-white px-3 py-1 rounded-full text-[10px] font-bold hover:bg-purple-500 transition shadow-sm">Login</a></li>
+                <li class="ml-1"><a href="/login" class="bg-purple-500 text-white px-4 py-2 rounded-full text-[11px] font-bold hover:bg-purple-600 transition shadow-md shadow-purple-500/25 whitespace-nowrap">Login</a></li>
             @endauth
         </ul>
 
         <!-- Mobile -->
-        <div class="lg:hidden flex items-center justify-between bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-5 py-3 rounded-full shadow-md border border-purple-100 dark:border-slate-700">
-            <a href="#beranda" class="text-xs font-bold text-purple-600 dark:text-purple-300">{{ $nama }} ✦</a>
-            <button onclick="toggleMobileMenu()" class="w-8 h-8 rounded-full bg-purple-100 dark:bg-slate-700 flex items-center justify-center text-purple-600 dark:text-purple-300 transition" title="Menu" aria-label="Buka menu">
+        <div class="lg:hidden flex items-center justify-between bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-5 py-3 rounded-full shadow-lg shadow-purple-900/5 border border-purple-100/80 dark:border-slate-700">
+            <a href="#beranda" class="text-sm font-bold text-purple-600 dark:text-purple-300">{{ $nama }} ✦</a>
+            <button type="button" onclick="toggleMobileMenu()" class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-100 to-purple-200 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center text-purple-600 dark:text-purple-300 ring-1 ring-purple-200/80 dark:ring-slate-600/80 transition" title="Menu" aria-label="Buka menu" aria-expanded="false">
                 <i id="menu-icon" class="fa-solid fa-bars text-xs"></i>
             </button>
         </div>
@@ -100,20 +178,20 @@
         <!-- Dropdown mobile: absolute supaya mengambang di atas konten -->
         <div id="mobile-menu" class="lg:hidden hidden absolute top-full left-0 right-0 mt-2 z-50 bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-purple-100 dark:border-slate-700 p-4 max-h-[75vh] overflow-y-auto">
             <ul class="flex flex-col text-xs font-medium divide-y divide-purple-50 dark:divide-slate-700">
-                <li><a href="#beranda" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Beranda</a></li>
-                <li><a href="#tentang" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Tentang</a></li>
-                <li><a href="#skills" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Skills</a></li>
-                <li><a href="#project" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Project</a></li>
-                <li><a href="#sertifikat" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Sertifikat</a></li>
-                <li><a href="#pengalaman" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Pengalaman</a></li>
-                <li><a href="#cv" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">CV Digital</a></li>
-                <li><a href="#blog" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Blog</a></li>
-                <li><a href="#testimoni" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Testimoni</a></li>
-                <li><a href="#kontak" onclick="toggleMobileMenu()" class="block px-3 py-2.5 hover:text-purple-500 transition">Kontak</a></li>
+                <li><a href="#beranda" data-nav-link="beranda" onclick="toggleMobileMenu()" class="mobile-link block px-3 py-2.5 rounded-xl hover:text-purple-500 transition">Beranda</a></li>
+                <li><a href="#tentang" data-nav-link="tentang" onclick="toggleMobileMenu()" class="mobile-link block px-3 py-2.5 rounded-xl hover:text-purple-500 transition">Tentang</a></li>
+                <li><a href="#skills" data-nav-link="skills" onclick="toggleMobileMenu()" class="mobile-link block px-3 py-2.5 rounded-xl hover:text-purple-500 transition">Skills</a></li>
+                <li><a href="#project" data-nav-link="project" onclick="toggleMobileMenu()" class="mobile-link block px-3 py-2.5 rounded-xl hover:text-purple-500 transition">Project</a></li>
+                <li><a href="#sertifikat" data-nav-link="sertifikat" onclick="toggleMobileMenu()" class="mobile-link block px-3 py-2.5 rounded-xl hover:text-purple-500 transition">Sertifikat</a></li>
+                <li><a href="#pengalaman" data-nav-link="pengalaman" onclick="toggleMobileMenu()" class="mobile-link block px-3 py-2.5 rounded-xl hover:text-purple-500 transition">Pengalaman</a></li>
+                <li><a href="#cv" data-nav-link="cv" onclick="toggleMobileMenu()" class="mobile-link block px-3 py-2.5 rounded-xl hover:text-purple-500 transition">CV Digital</a></li>
+                <li><a href="#blog" data-nav-link="blog" onclick="toggleMobileMenu()" class="mobile-link block px-3 py-2.5 rounded-xl hover:text-purple-500 transition">Blog</a></li>
+                <li><a href="#testimoni" data-nav-link="testimoni" onclick="toggleMobileMenu()" class="mobile-link block px-3 py-2.5 rounded-xl hover:text-purple-500 transition">Testimoni</a></li>
+                <li><a href="#kontak" data-nav-link="kontak" onclick="toggleMobileMenu()" class="mobile-link block px-3 py-2.5 rounded-xl hover:text-purple-500 transition">Kontak</a></li>
             </ul>
             <div class="flex items-center justify-between pt-3 mt-2 border-t border-purple-50 dark:border-slate-700">
-                <button onclick="toggleDarkMode(); toggleMobileMenu();" class="w-8 h-8 rounded-full bg-purple-100 dark:bg-slate-700 flex items-center justify-center text-purple-600 dark:text-yellow-400 transition" title="Ganti Tema">
-                    <i class="theme-icon fa-solid fa-moon text-[10px]"></i>
+                <button type="button" onclick="toggleDarkMode(); toggleMobileMenu();" class="theme-toggle w-9 h-9 rounded-full bg-gradient-to-br from-purple-100 to-purple-200 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center text-purple-600 dark:text-amber-300 ring-1 ring-purple-200/80 dark:ring-slate-600/80 transition" title="Ganti Tema" aria-label="Ganti tema terang/gelap">
+                    <i class="theme-icon fa-solid fa-moon"></i>
                 </button>
                 @auth
                     <div class="flex items-center gap-3">
@@ -124,7 +202,7 @@
                         </form>
                     </div>
                 @else
-                    <a href="/login" class="bg-purple-400 text-white px-4 py-1.5 rounded-full text-[10px] font-bold hover:bg-purple-500 transition shadow-sm">Login</a>
+                    <a href="/login" class="bg-purple-500 text-white px-4 py-1.5 rounded-full text-[10px] font-bold hover:bg-purple-600 transition shadow-sm">Login</a>
                 @endauth
             </div>
         </div>
@@ -166,9 +244,15 @@
                 <a href="#project" class="bg-purple-500 text-white px-6 py-3 rounded-2xl text-sm font-medium shadow-md hover:bg-purple-600 transition">
                     Lihat Portofolio
                 </a>
-                <a href="#cv" class="bg-purple-100 dark:bg-slate-700 text-purple-700 dark:text-purple-300 px-6 py-3 rounded-2xl text-sm font-medium hover:bg-purple-200 transition flex items-center gap-2">
-                    <i class="fa-solid fa-file-lines"></i> Lihat CV
-                </a>
+                @if($profile && $profile->file_cv)
+                    <button type="button" onclick="openCvModal()" class="bg-purple-100 dark:bg-slate-700 text-purple-700 dark:text-purple-300 px-6 py-3 rounded-2xl text-sm font-medium hover:bg-purple-200 transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-lines"></i> Lihat CV
+                    </button>
+                @else
+                    <a href="#cv" class="bg-purple-100 dark:bg-slate-700 text-purple-700 dark:text-purple-300 px-6 py-3 rounded-2xl text-sm font-medium hover:bg-purple-200 transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-lines"></i> Lihat CV
+                    </a>
+                @endif
                 <a href="#kontak" class="bg-white dark:bg-slate-800 border border-purple-200 dark:border-slate-700 text-purple-600 dark:text-purple-300 px-6 py-3 rounded-2xl text-sm font-medium shadow-sm hover:bg-purple-50 dark:hover:bg-slate-700 transition flex items-center gap-2">
                     <i class="fa-solid fa-envelope text-xs"></i> Hubungi Saya
                 </a>
@@ -506,27 +590,25 @@
         </div>
 
         @if($profile && $profile->file_cv)
-            <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] border border-purple-100 dark:border-slate-700 shadow-sm p-4 md:p-6">
-                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                    <div>
-                        <h3 class="font-bold text-sm">{{ $profile->file_cv }}</h3>
-                        <p class="text-[10px] text-slate-400">CV dalam format PDF</p>
-                    </div>
-                    <div class="flex gap-2">
-                        <a href="{{ asset('files/' . $profile->file_cv) }}" target="_blank" class="bg-purple-100 dark:bg-slate-700 text-purple-700 dark:text-purple-300 px-4 py-2 rounded-xl text-xs font-bold hover:bg-purple-200 transition">
-                            <i class="fa-solid fa-up-right-from-square mr-1"></i> Buka PDF
-                        </a>
-                        <a href="{{ route('cv.download') }}" class="bg-purple-500 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-purple-600 transition">
-                            <i class="fa-solid fa-download mr-1"></i> Download CV
-                        </a>
-                    </div>
+            <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] border border-purple-100 dark:border-slate-700 shadow-sm p-8 md:p-10 text-center">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-purple-100 dark:bg-slate-700 text-purple-500 flex items-center justify-center text-3xl mb-4">
+                    <i class="fa-solid fa-file-pdf"></i>
                 </div>
-                <div class="rounded-2xl overflow-hidden border border-purple-100 dark:border-slate-700 bg-purple-50 dark:bg-slate-900">
-                    <iframe src="{{ asset('files/' . $profile->file_cv) }}#toolbar=0&navpanes=0" class="w-full h-[420px] md:h-[600px]" title="Preview CV Digital"></iframe>
+                <h3 class="font-bold text-base break-all">{{ $profile->file_cv }}</h3>
+                <p class="text-[11px] text-slate-400 mt-1 max-w-md mx-auto">
+                    CV dalam format PDF. Pratinjau tidak ditampilkan otomatis — klik tombol di bawah untuk melihat atau mengunduhnya.
+                </p>
+                <div class="flex flex-wrap justify-center gap-3 mt-6">
+                    <button type="button" onclick="openCvModal()" class="bg-purple-100 dark:bg-slate-700 text-purple-700 dark:text-purple-300 px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-purple-200 dark:hover:bg-slate-600 transition inline-flex items-center gap-2">
+                        <i class="fa-solid fa-eye"></i> Lihat CV
+                    </button>
+                    <a href="{{ route('cv.download') }}" download class="bg-purple-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-purple-600 transition shadow-md shadow-purple-500/25 inline-flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i> Download CV
+                    </a>
                 </div>
             </div>
         @else
-            <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] border border-dashed border-purple-200 dark:border-slate-700 p-12 text-center">
+            <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] border border-dashed border-purple-200 dark:border-slate-700 p-12 text-center shadow-sm">
                 <div class="w-14 h-14 mx-auto rounded-2xl bg-purple-100 dark:bg-slate-700 text-purple-500 flex items-center justify-center text-2xl mb-4"><i class="fa-solid fa-file-pdf"></i></div>
                 <h3 class="font-bold">CV belum diunggah</h3>
                 <p class="text-xs text-slate-400 mt-1">Silakan hubungi saya melalui halaman kontak untuk mendapatkan CV terbaru.</p>
@@ -590,9 +672,13 @@
                             <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-light mb-6">"{{ $testi->pesan }}"</p>
                         </div>
                         <div class="flex items-center gap-3 pt-4 border-t border-purple-100 dark:border-slate-700">
-                            <div class="w-10 h-10 rounded-full bg-purple-200 dark:bg-purple-900 flex items-center justify-center font-bold text-purple-700 dark:text-purple-300 text-xs uppercase">
-                                {{ mb_substr($testi->nama ?? 'P', 0, 2) }}
-                            </div>
+                            @if($testi->foto && file_exists(storage_path('app/public/' . $testi->foto)))
+                                <img src="{{ asset('storage/' . $testi->foto) }}" alt="Foto {{ $testi->nama }}" class="w-10 h-10 rounded-full object-cover ring-2 ring-purple-200 dark:ring-purple-900">
+                            @else
+                                <div class="w-10 h-10 rounded-full bg-purple-200 dark:bg-purple-900 flex items-center justify-center font-bold text-purple-700 dark:text-purple-300 text-xs uppercase">
+                                    {{ mb_substr($testi->nama ?? 'P', 0, 2) }}
+                                </div>
+                            @endif
                             <div>
                                 <h4 class="font-bold text-xs text-slate-800 dark:text-slate-100">{{ $testi->nama }}</h4>
                                 <p class="text-[10px] text-purple-500 font-medium">{{ $testi->created_at ? $testi->created_at->diffForHumans() : 'Baru saja' }}</p>
@@ -611,24 +697,32 @@
             <h3 class="text-lg font-bold text-center mb-2">Berikan Ulasan / Testimoni</h3>
             <p class="text-xs text-slate-400 text-center mb-6">Bagikan kesan atau pesanmu terhadap portofolio ini.</p>
 
-            <form action="{{ route('testimonial.store') }}" method="POST" class="space-y-4">
+            <form action="{{ route('testimonial.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 <div>
                     <label class="block text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300">Nama Anda</label>
-                    <input type="text" name="nama" required placeholder="Contoh: Budi Santoso" class="w-full bg-purple-50/40 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-2xl px-4 py-3 text-xs outline-none focus:border-purple-400 transition">
+                    <input type="text" name="nama" required value="{{ old('nama') }}" placeholder="Contoh: Budi Santoso" class="w-full bg-purple-50/40 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-2xl px-4 py-3 text-xs outline-none focus:border-purple-400 transition">
+                    @error('nama') <p class="text-[10px] text-rose-500 mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300">Anda Memberi Ulasan Sebagai</label>
                     <select name="profesi" class="w-full bg-purple-50/40 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-2xl px-4 py-3 text-xs outline-none focus:border-purple-400 transition cursor-pointer">
-                        <option value="Pengunjung">Pengunjung / Pengguna</option>
-                        <option value="Guru Pembimbing">Guru Pembimbing</option>
-                        <option value="Teman">Teman / Rekan Kelompok</option>
-                        <option value="Tempat PLK">Pembimbing Tempat PLK</option>
+                        <option value="Pengunjung" @selected(old('profesi') === 'Pengunjung')>Pengunjung / Pengguna</option>
+                        <option value="Guru Pembimbing" @selected(old('profesi') === 'Guru Pembimbing')>Guru Pembimbing</option>
+                        <option value="Teman" @selected(old('profesi') === 'Teman')>Teman / Rekan Kelompok</option>
+                        <option value="Tempat PLK" @selected(old('profesi') === 'Tempat PLK')>Pembimbing Tempat PLK</option>
                     </select>
                 </div>
                 <div>
+                    <label class="block text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300">Foto Profil <span class="text-slate-400 font-normal">(opsional)</span></label>
+                    <input type="file" name="foto" accept="image/jpeg,image/png,image/jpg,image/webp" class="w-full bg-purple-50/40 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-2xl px-4 py-2.5 text-xs outline-none focus:border-purple-400 transition file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-purple-100 file:text-purple-700 dark:file:bg-slate-700 dark:file:text-purple-300">
+                    <p class="text-[10px] text-slate-400 mt-1">Maksimal 2MB. Format JPG, PNG, atau WEBP.</p>
+                    @error('foto') <p class="text-[10px] text-rose-500 mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div>
                     <label class="block text-xs font-semibold mb-1 text-slate-600 dark:text-slate-300">Pesan / Ulasan</label>
-                    <textarea name="pesan" rows="3" required placeholder="Tuliskan ulasanmu di sini..." class="w-full bg-purple-50/40 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-2xl px-4 py-3 text-xs outline-none focus:border-purple-400 transition"></textarea>
+                    <textarea name="pesan" rows="3" required placeholder="Tuliskan ulasanmu di sini..." class="w-full bg-purple-50/40 dark:bg-slate-900 border border-purple-100 dark:border-slate-700 rounded-2xl px-4 py-3 text-xs outline-none focus:border-purple-400 transition">{{ old('pesan') }}</textarea>
+                    @error('pesan') <p class="text-[10px] text-rose-500 mt-1">{{ $message }}</p> @enderror
                 </div>
                 <button type="submit" class="w-full bg-purple-500 text-white font-bold py-3 rounded-2xl text-xs hover:bg-purple-600 transition shadow-md">Kirim Testimoni</button>
             </form>
@@ -684,13 +778,8 @@
                         </a>
                     @endif
                     @if($profile && $profile->instagram)
-                        <a href="{{ $profile->instagram }}" target="_blank" title="Instagram" class="w-14 h-14 bg-white dark:bg-slate-800 text-purple-500 rounded-2xl flex items-center justify-center text-2xl shadow-sm hover:bg-purple-500 hover:text-white transition-all duration-300 border border-purple-100 dark:border-slate-700">
+                        <a href="{{ $profile->instagram }}" target="_blank" rel="noopener" title="Instagram" class="w-14 h-14 bg-white dark:bg-slate-800 text-purple-500 rounded-2xl flex items-center justify-center text-2xl shadow-sm hover:bg-purple-500 hover:text-white transition-all duration-300 border border-purple-100 dark:border-slate-700">
                             <i class="fa-brands fa-instagram"></i>
-                        </a>
-                    @endif
-                    @if($profile && $profile->tiktok)
-                        <a href="{{ $profile->tiktok }}" target="_blank" title="TikTok" class="w-14 h-14 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-2xl flex items-center justify-center text-xl shadow-sm hover:bg-slate-900 hover:text-white transition-all duration-300 border border-purple-100 dark:border-slate-700">
-                            <i class="fa-brands fa-tiktok"></i>
                         </a>
                     @endif
                 </div>
@@ -797,6 +886,25 @@
         </div>
     </div>
 </div>
+
+<!-- MODAL PREVIEW CV (iframe baru dimuat saat tombol diklik) -->
+@if($profile && $profile->file_cv)
+<div id="cvModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[80] hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-[2rem] max-w-4xl w-full p-4 md:p-6 relative shadow-2xl border border-purple-100 dark:border-slate-700">
+        <button type="button" onclick="closeCvModal()" class="absolute top-4 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-white text-xl font-bold z-10" aria-label="Tutup pratinjau CV">✕</button>
+        <div class="flex flex-wrap items-center justify-between gap-3 pr-10 mb-3">
+            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 truncate">CV Digital / Resume</h3>
+            <a href="{{ route('cv.download') }}" download class="bg-purple-500 text-white px-4 py-2 rounded-xl text-[11px] font-bold hover:bg-purple-600 transition inline-flex items-center gap-2">
+                <i class="fa-solid fa-download"></i> Download CV
+            </a>
+        </div>
+        <div class="rounded-2xl overflow-hidden bg-purple-50 dark:bg-slate-900 border border-purple-100 dark:border-slate-700">
+            <iframe id="cvFrame" src="about:blank" data-src="{{ asset('files/' . $profile->file_cv) }}#toolbar=0&navpanes=0&view=FitH" class="w-full h-[65vh] md:h-[75vh]" title="Preview CV Digital"></iframe>
+        </div>
+        <p class="text-[10px] text-slate-400 mt-2">Jika pratinjau tidak muncul di perangkatmu, gunakan tombol Download CV di atas.</p>
+    </div>
+</div>
+@endif
 
 <script>
     // ==========================================
@@ -958,12 +1066,45 @@
         document.body.style.overflow = '';
     }
 
+    // ==========================================
+    // PREVIEW CV (dimuat hanya saat diklik)
+    // ==========================================
+    function openCvModal() {
+        const modal = document.getElementById('cvModal');
+        const frame = document.getElementById('cvFrame');
+        if (!modal || !frame) return;
+
+        // src diisi saat pertama kali dibuka, jadi PDF tidak ikut ter-load
+        // saat halaman utama dibuka.
+        if (frame.dataset.src && frame.getAttribute('src') !== frame.dataset.src) {
+            frame.setAttribute('src', frame.dataset.src);
+        }
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeCvModal() {
+        const modal = document.getElementById('cvModal');
+        const frame = document.getElementById('cvFrame');
+        if (!modal) return;
+
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+
+        // Hentikan pemuatan PDF agar memori tidak menumpuk.
+        if (frame) frame.setAttribute('src', 'about:blank');
+    }
+
     // Tutup modal dengan tombol Escape
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
             closeDetailModal();
             closePreviewModal();
             closeCertModal();
+            closeCvModal();
         }
     });
 
@@ -980,28 +1121,36 @@
             menu.classList.add('hidden');
             icon.className = 'fa-solid fa-bars text-xs';
         }
+
+        const trigger = icon.closest('button');
+        if (trigger) {
+            trigger.setAttribute('aria-expanded', menu.classList.contains('hidden') ? 'false' : 'true');
+        }
     }
 
     // ==========================================
     // DARK / LIGHT MODE
     // ==========================================
+    function applyTheme(theme) {
+        const isDark = theme === 'dark';
+        document.documentElement.classList.toggle('dark', isDark);
+
+        document.querySelectorAll('.theme-icon').forEach(icon => {
+            icon.classList.toggle('fa-moon', !isDark);
+            icon.classList.toggle('fa-sun', isDark);
+        });
+    }
+
     function toggleDarkMode() {
-        const html = document.documentElement;
-        const icons = document.querySelectorAll('.theme-icon');
-        if (html.classList.contains('dark')) {
-            html.classList.remove('dark');
-            localStorage.theme = 'light';
-            icons.forEach(i => i.className = 'theme-icon fa-solid fa-moon text-[9px]');
-        } else {
-            html.classList.add('dark');
-            localStorage.theme = 'dark';
-            icons.forEach(i => i.className = 'theme-icon fa-solid fa-sun text-[9px] text-yellow-400');
-        }
+        const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+        localStorage.theme = nextTheme;
+        applyTheme(nextTheme);
     }
 
     if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-        document.querySelectorAll('.theme-icon').forEach(i => i.className = 'theme-icon fa-solid fa-sun text-[9px] text-yellow-400');
+        applyTheme('dark');
+    } else {
+        applyTheme('light');
     }
 
     // ==========================================
@@ -1021,25 +1170,72 @@
     });
 
     // ==========================================
-    // ANIMASI REVEAL SAAT SCROLL
+    // ANIMASI REVEAL SAAT SCROLL (fade-in + slide-up)
     // ==========================================
-    document.querySelectorAll('section').forEach(sec => {
-        Array.from(sec.children).forEach((child, index) => {
-            child.classList.add('reveal');
-            child.style.transitionDelay = (index * 0.08) + 's';
-        });
-    });
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('revealed');
-                revealObserver.unobserve(entry.target);
+    if (!prefersReducedMotion && 'IntersectionObserver' in window) {
+        document.querySelectorAll('section').forEach(sec => {
+            Array.from(sec.children).forEach((child, index) => {
+                child.classList.add('reveal');
+                child.style.transitionDelay = Math.min(index * 0.08, 0.4) + 's';
+            });
+        });
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    }
+
+    // ==========================================
+    // INDIKATOR NAVBAR AKTIF SAAT SCROLL
+    // ==========================================
+    const navLinks = Array.from(document.querySelectorAll('[data-nav-link]'));
+    const navSections = navLinks
+        .map(link => document.getElementById(link.dataset.navLink))
+        .filter((section, index, list) => section && list.indexOf(section) === index);
+
+    function updateActiveNav() {
+        if (navSections.length === 0) return;
+
+        // Garis acuan: sedikit di bawah navbar.
+        const referenceLine = window.innerHeight * 0.25;
+        let currentSection = navSections[0];
+
+        navSections.forEach(section => {
+            const rect = section.getBoundingClientRect();
+            if (rect.top <= referenceLine) {
+                currentSection = section;
             }
         });
-    }, { threshold: 0.08 });
 
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+        // Kalau sudah mentok di bawah, aktifkan section terakhir.
+        if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 4)) {
+            currentSection = navSections[navSections.length - 1];
+        }
+
+        navLinks.forEach(link => {
+            const isActive = link.dataset.navLink === currentSection.id;
+            link.classList.toggle('nav-active', isActive);
+            if (isActive) {
+                link.setAttribute('aria-current', 'true');
+            } else {
+                link.removeAttribute('aria-current');
+            }
+        });
+    }
+
+    window.addEventListener('scroll', updateActiveNav, { passive: true });
+    window.addEventListener('resize', updateActiveNav);
+    window.addEventListener('load', updateActiveNav);
+    updateActiveNav();
 
     // ==========================================
     // ANIMASI GANTI HALAMAN

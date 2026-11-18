@@ -13,6 +13,7 @@ use App\Models\Setting;
 use App\Models\Skill;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -49,8 +50,14 @@ class HomeController extends Controller
         if ($profile && $profile->file_cv) {
             $path = public_path('files/' . $profile->file_cv);
 
-            if (file_exists($path)) {
-                return response()->download($path);
+            if (is_file($path)) {
+                // Direct download: browser tidak berpindah halaman dan tidak
+                // membuka tab baru yang kosong.
+                $namaFile = 'CV-' . Str::slug($profile->nama_lengkap ?: 'Nurhaina') . '.pdf';
+
+                return response()->download($path, $namaFile, [
+                    'Content-Type' => 'application/pdf',
+                ]);
             }
         }
 
@@ -80,12 +87,24 @@ class HomeController extends Controller
             'nama' => 'required|string|max:255',
             'profesi' => 'nullable|string|max:255',
             'pesan' => 'required|string',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'foto.image' => 'Foto profil harus berupa gambar.',
+            'foto.mimes' => 'Format foto harus JPG, PNG, atau WEBP.',
+            'foto.max' => 'Ukuran foto maksimal 2MB.',
         ]);
+
+        // Foto profil opsional: disimpan di storage/app/public/testimonials.
+        $foto = null;
+        if ($request->hasFile('foto')) {
+            $foto = $request->file('foto')->store('testimonials', 'public');
+        }
 
         Testimonial::create([
             'nama' => $request->nama,
             'profesi' => $request->input('profesi', 'Pengunjung'),
             'pesan' => $request->pesan,
+            'foto' => $foto,
             'sumber' => 'pengunjung',
             'is_visible' => true,
         ]);

@@ -33,6 +33,11 @@ fi
 # Bersihkan cache konfigurasi agar variabel environment Railway terbaca.
 php artisan config:clear || true
 
+# Buat folder penyimpanan publik + symlink public/storage -> storage/app/public
+# supaya foto testimoni yang diunggah bisa diakses dari browser.
+mkdir -p storage/app/public/testimonials
+php artisan storage:link || true
+
 # Jalankan semua migrasi yang belum diterapkan (termasuk tabel sessions,
 # settings, educations, dan seed konten default).
 # Jangan hentikan container kalau database sedang belum siap: aplikasi tetap
