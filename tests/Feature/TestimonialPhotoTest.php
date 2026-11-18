@@ -102,4 +102,31 @@ class TestimonialPhotoTest extends TestCase
             ->assertRedirect('/#cv')
             ->assertSessionHas('error');
     }
+
+    public function test_cv_download_falls_back_to_an_available_pdf(): void
+    {
+        $profile = Profile::first() ?: new Profile();
+        $profile->nama_lengkap = 'Nurhaina';
+        $profile->file_cv = 'file-yang-sudah-hilang.pdf';
+        $profile->save();
+
+        $directory = public_path('files');
+        if (! is_dir($directory)) {
+            mkdir($directory, 0777, true);
+        }
+
+        $path = $directory . '/cv-cadangan.pdf';
+        file_put_contents($path, '%PDF-1.4 contoh');
+
+        try {
+            $response = $this->get(route('cv.download'));
+
+            $response->assertOk();
+            $response->assertHeader('content-type', 'application/pdf');
+        } finally {
+            if (is_file($path)) {
+                unlink($path);
+            }
+        }
+    }
 }

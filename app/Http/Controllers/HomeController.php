@@ -19,8 +19,17 @@ class HomeController extends Controller
 {
     public function index()
     {
+        $profile = Profile::first();
+
+        if ($profile) {
+            // Samakan nama file CV dengan file yang benar-benar ada di server.
+            // File unggahan admin bisa hilang setelah redeploy (storage container
+            // bersifat sementara), sehingga tombol Lihat/Download CV tetap jalan.
+            $profile->file_cv = $this->resolveCvFile($profile);
+        }
+
         return view('home', [
-            'profile' => Profile::first(),
+            'profile' => $profile,
             'projects' => Project::latest()->get(),
             'skills' => Skill::orderBy('kategori')->orderBy('urutan')->get(),
             'certificates' => Certificate::latest()->get(),
@@ -46,22 +55,53 @@ class HomeController extends Controller
     public function downloadCv()
     {
         $profile = Profile::first();
+        $file = $this->resolveCvFile($profile);
 
-        if ($profile && $profile->file_cv) {
-            $path = public_path('files/' . $profile->file_cv);
+        if ($file) {
+            $path = public_path('files/' . $file);
 
-            if (is_file($path)) {
-                // Direct download: browser tidak berpindah halaman dan tidak
-                // membuka tab baru yang kosong.
-                $namaFile = 'CV-' . Str::slug($profile->nama_lengkap ?: 'Nurhaina') . '.pdf';
+            // Direct download: browser tidak berpindah halaman dan tidak
+            // membuka tab baru yang kosong.
+            $namaFile = 'CV-' . Str::slug($profile->nama_lengkap ?: 'Nurhaina') . '.pdf';
 
-                return response()->download($path, $namaFile, [
-                    'Content-Type' => 'application/pdf',
-                ]);
-            }
+            return response()->download($path, $namaFile, [
+                'Content-Type' => 'application/pdf',
+            ]);
         }
 
         return redirect('/#cv')->with('error', 'File CV belum tersedia.');
+    }
+
+    /**
+     * Tentukan file CV yang benar-benar tersedia di public/files.
+     * Prioritas: file yang tercatat di profil, lalu PDF apa pun di folder files.
+     */
+    private function resolveCvFile(?Profile $profile): ?string
+    {
+        // Tidak ada CV yang diunggah admin: biarkan tampilan "CV belum diunggah".
+        if (! $profile || ! $profile->file_cv) {
+            return null;
+        }
+
+        $directory = public_path('files');
+        $candidates = [basename($profile->file_cv)];
+
+        // File unggahan admin bisa hilang setelah redeploy (storage container
+        // bersifat sementara), jadi pakai PDF lain yang tersedia sebagai cadangan.
+        $available = glob($directory . '/*.pdf') ?: [];
+        sort($available);
+
+        foreach ($available as $path) {
+            $candidates[] = basename($path);
+        }
+
+        foreach ($candidates as $name) {
+            if ($name !== '' && is_file($directory . '/' . $name)) {
+                return $name;
+            }
+        }
+
+        return null;
     }
 
     public function storeMessage(Request $request)
