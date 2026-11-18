@@ -18,6 +18,17 @@ return new class extends Migration
     public function up(): void
     {
         $migrations = [
+            // Tabel dasar dulu, supaya aman kalau ada tabel yang belum ada.
+            '2026_05_12_144014_create_projects_table',
+            '2026_11_16_035500_create_profiles_table',
+            '2026_11_16_035512_create_skills_table',
+            '2026_11_16_035748_create_certificates_table',
+            '2026_11_16_035804_create_experiences_table',
+            '2026_11_16_035832_create_testimonials_table',
+            '2026_11_16_035846_create_posts_table',
+            '2026_11_16_045900_create_messages_table',
+
+            // Kolom & tabel tambahan.
             '2026_11_16_075438_add_file_cv_to_profiles_table',
             '2026_11_17_084025_add_fields_to_testimonials_table',
             '2026_11_18_000001_add_missing_columns_to_projects_and_certificates',
