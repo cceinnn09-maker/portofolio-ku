@@ -31,14 +31,19 @@ if [ -z "${APP_KEY:-}" ]; then
 fi
 
 # Bersihkan cache konfigurasi agar variabel environment Railway terbaca.
-php artisan config:clear
+php artisan config:clear || true
 
 # Jalankan semua migrasi yang belum diterapkan (termasuk tabel sessions,
 # settings, educations, dan seed konten default).
-php artisan migrate --force
+# Jangan hentikan container kalau database sedang belum siap: aplikasi tetap
+# dinyalakan, dan AppServiceProvider akan mencoba migrasi lagi pada request
+# pertama (lihat ensurePortfolioSchemaIsReady()).
+if ! php artisan migrate --force; then
+  echo "PERINGATAN: migrasi gagal. Aplikasi tetap dijalankan dan akan mencoba lagi otomatis."
+fi
 
 # Bersihkan cache route/view/config agar perubahan terbaru langsung dipakai.
-php artisan optimize:clear
+php artisan optimize:clear || true
 
 echo "Startup selesai. Menjalankan server di port ${PORT:-8000}..."
 exec php -S 0.0.0.0:${PORT:-8000} -t public

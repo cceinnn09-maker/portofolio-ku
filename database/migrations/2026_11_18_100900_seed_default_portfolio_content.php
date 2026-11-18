@@ -213,8 +213,12 @@ return new class extends Migration
         ];
 
         foreach ($settings as $setting) {
-            DB::table('settings')->updateOrInsert(
-                ['name' => $setting['name']],
+            // Jangan menimpa setting yang sudah diubah admin.
+            if (DB::table('settings')->where('name', $setting['name'])->exists()) {
+                continue;
+            }
+
+            DB::table('settings')->insert(
                 $setting + ['created_at' => $now, 'updated_at' => $now]
             );
         }

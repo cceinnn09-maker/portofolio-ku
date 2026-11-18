@@ -1,5 +1,7 @@
 compiled.php
 config.php
+portfolio-schema-ok
+portfolio-schema.lock
 down
 events.scanned.php
 maintenance.php
