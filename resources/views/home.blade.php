@@ -357,15 +357,11 @@
         <div class="mt-6 bg-purple-50/50 dark:bg-slate-800 p-6 md:p-8 rounded-3xl border border-purple-100 dark:border-slate-700">
             <h3 class="font-bold text-purple-600 dark:text-purple-400 mb-4"><i class="fa-solid fa-briefcase mr-2"></i> Pengalaman PLK (Praktik Latihan Kerja)</h3>
             @forelse($plkExperiences as $plk)
-                <div class="flex items-start gap-3 {{ ! $loop->last ? 'pb-4 mb-4 border-b border-purple-100 dark:border-slate-700' : '' }}">
-                    <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-xl flex items-center justify-center text-base flex-shrink-0">
-                        <i class="fa-solid fa-briefcase"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-base">{{ $plk->judul }}</h4>
-                        <p class="text-xs text-purple-500 font-medium mb-2">{{ $plk->posisi ? $plk->posisi . ' • ' : '' }}{{ $plk->institusi }} @if($plk->periode) • {{ $plk->periode }} @endif</p>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{{ $plk->deskripsi }}</p>
-                    </div>
+                {{-- Tanpa kotak ikon & tanpa judul berulang: header card sudah memuat ikon + judul. --}}
+                <div class="{{ ! $loop->last ? 'pb-4 mb-4 border-b border-purple-100 dark:border-slate-700' : '' }}">
+                    <p class="text-xs font-semibold text-slate-700 dark:text-slate-200">{{ $plk->posisi ?: $plk->institusi }}</p>
+                    <p class="text-[10px] text-purple-500 font-medium mb-1">{{ $plk->institusi }}@if($plk->periode) • {{ $plk->periode }}@endif</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">{{ $plk->deskripsi }}</p>
                 </div>
             @empty
                 <p class="text-xs text-slate-400 italic">Belum ada pengalaman PLK.</p>

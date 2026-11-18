@@ -105,10 +105,9 @@ return new class extends Migration
         // ============================================
         if (DB::table('skills')->count() === 0) {
             $skills = [
-                ['nama' => 'UI/UX Wireframing & Design', 'persentase' => 85, 'kategori' => 'hard', 'urutan' => 1],
-                ['nama' => 'Layout & Visual Hierarchy', 'persentase' => 80, 'kategori' => 'hard', 'urutan' => 2],
-                ['nama' => 'User Research & Flow', 'persentase' => 85, 'kategori' => 'hard', 'urutan' => 3],
-                ['nama' => 'Color Theory & Typography', 'persentase' => 80, 'kategori' => 'hard', 'urutan' => 4],
+                ['nama' => 'UI/UX Wireframe & Design', 'persentase' => 85, 'kategori' => 'hard', 'urutan' => 1],
+                ['nama' => 'HTML', 'persentase' => 80, 'kategori' => 'hard', 'urutan' => 2],
+                ['nama' => 'CSS', 'persentase' => 80, 'kategori' => 'hard', 'urutan' => 3],
                 ['nama' => 'Kerjasama Tim & Kolaborasi', 'persentase' => 85, 'kategori' => 'soft', 'urutan' => 1],
                 ['nama' => 'Problem Solving', 'persentase' => 80, 'kategori' => 'soft', 'urutan' => 2],
                 ['nama' => 'Manajemen Waktu', 'persentase' => 80, 'kategori' => 'soft', 'urutan' => 3],
@@ -150,11 +149,11 @@ return new class extends Migration
                     'updated_at' => $now,
                 ],
                 [
-                    'judul' => 'Lomba Kompetensi Desain Aplikasi',
+                    'judul' => 'Lomba Fashion Show Hari Kartini',
                     'posisi' => 'Peserta',
                     'institusi' => 'Tingkat Pelajar',
                     'periode' => null,
-                    'deskripsi' => 'Mengikuti lomba di bidang desain UI/UX dan pengembangan aplikasi tingkat pelajar, melatih kesiapan menyajikan karya serta berlatih menghadapi penilaian juri secara profesional.',
+                    'deskripsi' => 'Mengikuti Lomba Fashion Show dalam rangka memperingati Hari Kartini, menampilkan kreativitas dalam memadukan busana dan gaya, serta melatih rasa percaya diri tampil di depan juri dan penonton.',
                     'gambar' => null,
                     'jenis' => 'lomba',
                     'urutan' => 3,

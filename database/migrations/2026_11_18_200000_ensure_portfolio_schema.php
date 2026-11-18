@@ -43,6 +43,7 @@ return new class extends Migration
             '2026_11_18_100800_add_columns_to_certificates_table',
             '2026_11_18_100900_seed_default_portfolio_content',
             '2026_11_18_210000_add_foto_to_testimonials_table',
+            '2026_11_19_100000_update_hard_skills_and_fashion_show_experience',
         ];
 
         foreach ($migrations as $name) {
